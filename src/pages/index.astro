@@ -1,110 +1,17 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+import Hero from "../components/Hero.astro";
+
+import Pillars from "../components/Pillars.astro";
+
+import CallToAction from "../components/CallToAction.astro";
 ---
 
-<Layout 
-	title="Inicio"
-	description="Sitio institucional de COCOMANORTE"
->
+<Layout title="Inicio" description="Sitio institucional COCOMANORTE">
+  <Hero />
 
+  <Pillars />
 
-<section class="hero">
-
-
-<h1>
-	COCOMANORTE
-</h1>
-
-
-<h2>
-	Consejo Comunitario Mayor
-</h2>
-
-
-<p>
-
-Fortaleciendo nuestra identidad cultural,
-la protección del territorio y la conservación
-de nuestra biodiversidad.
-
-</p>
-
-
-<a href="/quienes-somos">
-	Conoce nuestra historia
-</a>
-
-
-</section>
-
-
-
-<section>
-
-<h2>
-	Nuestros pilares
-</h2>
-
-
-<div>
-
-<h3>
-	Territorio
-</h3>
-
-<p>
-	Defensa y fortalecimiento del territorio colectivo.
-</p>
-
-
-</div>
-
-
-<div>
-
-<h3>
-	Cultura
-</h3>
-
-<p>
-	Conservación de saberes y tradiciones ancestrales.
-</p>
-
-
-</div>
-
-
-
-<div>
-
-<h3>
-	Conservación
-</h3>
-
-<p>
-	Protección de ecosistemas y biodiversidad.
-</p>
-
-
-</div>
-
-
-<div>
-
-<h3>
-	Turismo comunitario
-</h3>
-
-<p>
-	Experiencias desde nuestra identidad territorial.
-</p>
-
-
-</div>
-
-
-</section>
-
-
-
+  <CallToAction />
 </Layout>
