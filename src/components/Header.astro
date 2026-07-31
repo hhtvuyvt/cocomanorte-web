@@ -1,49 +1,43 @@
-<header>
+---
+import Container from "./ui/Container.astro";
+---
 
-<nav>
+<header class="header">
+  <Container>
+    <a href="/" class="logo">
+      <div class="logo-icon">
+        <img src="/logo/logo.jpg" alt="Logo Cocomanorte" class="logo-image" />
+      </div>
 
-<div class="logo">
+      <div class="logo-text">
+        <span class="nombre"> COCOMANORTE </span>
 
-<a href="/">
-COCOMANORTE
-</a>
+        <span class="eslogan"> Territorio • Cultura • Conservación </span>
+      </div>
+    </a>
 
-</div>
+    <nav>
+      <ul class="menu">
+        <li>
+          <a href="/">Inicio</a>
+        </li>
 
+        <li>
+          <a href="/quienes-somos"> Organización </a>
+        </li>
 
-<ul>
+        <li>
+          <a href="/territorio"> Territorio </a>
+        </li>
 
-<li>
-<a href="/">Inicio</a>
-</li>
+        <li>
+          <a href="/turismo"> Turismo </a>
+        </li>
 
-<li>
-<a href="/quienes-somos">
-Organización
-</a>
-</li>
-
-<li>
-<a href="/territorio">
-Territorio
-</a>
-</li>
-
-<li>
-<a href="/turismo">
-Turismo
-</a>
-</li>
-
-<li>
-<a href="/contacto">
-Contacto
-</a>
-</li>
-
-</ul>
-
-
-</nav>
-
+        <li>
+          <a href="/contacto"> Contacto </a>
+        </li>
+      </ul>
+    </nav>
+  </Container>
 </header>

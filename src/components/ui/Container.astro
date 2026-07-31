@@ -1,0 +1,37 @@
+---
+/**
+ * ------------------------------------------------------------------
+ * COMPONENTE
+ * ------------------------------------------------------------------
+ *
+ * Nombre:
+ *      Container
+ *
+ * Descripción:
+ *      Contenedor reutilizable para mantener el ancho máximo,
+ *      alineación y espaciado horizontal del contenido del sitio.
+ *
+ * Uso:
+ *
+ * <Container>
+ *      Contenido de la sección
+ * </Container>
+ *
+ * Proyecto:
+ *      COCOMANORTE Web
+ *
+ * ------------------------------------------------------------------
+ */
+---
+
+<div class="container">
+  <slot />
+</div>
+
+<style>
+  .container {
+    width: min(92%, 1200px);
+
+    margin-inline: auto;
+  }
+</style>

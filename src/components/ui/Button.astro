@@ -1,0 +1,86 @@
+---
+/**
+ * ------------------------------------------------------------------
+ * COMPONENTE
+ * ------------------------------------------------------------------
+ *
+ * Nombre:
+ *      Button
+ *
+ * Descripción:
+ *      Botón reutilizable para acciones y navegación.
+ *
+ * Responsabilidades:
+ *
+ *      - Mantener el diseño consistente de botones.
+ *      - Evitar repetir estilos.
+ *      - Permitir diferentes variantes.
+ *
+ * Uso:
+ *
+ * <Button href="/contacto">
+ *      Contacto
+ * </Button>
+ *
+ * Proyecto:
+ *      COCOMANORTE Web
+ *
+ * ------------------------------------------------------------------
+ */
+
+interface Props {
+  href: string;
+
+  variant?: "primary" | "secondary";
+}
+
+const {
+  href,
+
+  variant = "primary",
+} = Astro.props;
+---
+
+<a href={href} class={`button ${variant}`}>
+  <slot />
+</a>
+
+<style>
+  .button {
+    display: inline-block;
+
+    padding: 12px 28px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.25s;
+  }
+
+  .primary {
+    background: var(--verde-territorio);
+
+    color: white;
+  }
+
+  .primary:hover {
+    background: #14532d;
+  }
+
+  .secondary {
+    background: transparent;
+
+    color: var(--verde-territorio);
+
+    border: 2px solid var(--verde-territorio);
+  }
+
+  .secondary:hover {
+    background: var(--verde-territorio);
+
+    color: white;
+  }
+</style>

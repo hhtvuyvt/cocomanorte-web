@@ -1,73 +1,147 @@
-* {
-  box-sizing: border-box;
+:root {
+  --verde: #166534;
+
+  --verde-claro: #dcfce7;
+
+  --azul: #0369a1;
+
+  --arena: #fde68a;
+
+  --tierra: #92400e;
+
+  --gris: #374151;
+
+  --blanco: #ffffff;
+
+  --ancho-maximo: 1200px;
 }
 
-body {
-  margin: 0;
+.header {
+  background: var(--verde);
 
-  font-family: Arial, Helvetica, sans-serif;
+  position: sticky;
 
-  color: #1f2937;
+  top: 0;
 
-  background: #ffffff;
+  z-index: 1000;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 }
 
-header {
-  background: #14532d;
+.container {
+  width: min(92%, var(--ancho-maximo));
 
-  color: white;
+  margin: auto;
 
-  padding: 20px;
-}
-
-nav {
   display: flex;
 
   justify-content: space-between;
 
   align-items: center;
 
-  max-width: 1200px;
-
-  margin: auto;
+  min-height: 80px;
 }
 
 .logo {
-  font-size: 24px;
-
-  font-weight: bold;
-}
-
-ul {
   display: flex;
 
-  gap: 20px;
+  align-items: center;
 
-  list-style: none;
-}
-
-a {
-  color: white;
+  gap: 15px;
 
   text-decoration: none;
 }
 
-main {
-  max-width: 1200px;
+.logo-icon {
+  width: 58px;
 
-  margin: auto;
+  height: 58px;
 
-  padding: 40px 20px;
+  border-radius: 50%;
+
+  background: var(--arena);
+
+  color: var(--verde);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 30px;
+
+  font-weight: bold;
 }
 
-footer {
-  background: #14532d;
+.logo-text {
+  display: flex;
 
+  flex-direction: column;
+}
+
+.logo-image {
+  width: 58px;
+
+  height: 58px;
+
+  object-fit: contain;
+}
+
+.nombre {
   color: white;
 
-  text-align: center;
+  font-size: 1.45rem;
 
-  padding: 30px;
+  font-weight: 700;
 
-  margin-top: 50px;
+  letter-spacing: 0.08rem;
+}
+
+.eslogan {
+  color: #d1fae5;
+
+  font-size: 0.85rem;
+}
+
+.menu {
+  display: flex;
+
+  gap: 25px;
+
+  list-style: none;
+
+  margin: 0;
+
+  padding: 0;
+}
+
+.menu a {
+  color: white;
+
+  text-decoration: none;
+
+  font-weight: 500;
+
+  transition: 0.25s;
+}
+
+.menu a:hover {
+  color: var(--arena);
+}
+
+@media (max-width: 850px) {
+  .container {
+    flex-direction: column;
+
+    padding: 20px 0;
+  }
+
+  .menu {
+    margin-top: 20px;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+  }
 }
