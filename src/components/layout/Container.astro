@@ -1,0 +1,18 @@
+---
+/**
+ * Contenedor global del sitio.
+ * Controla ancho máximo y alineación horizontal.
+ */
+---
+
+<div class="container">
+  <slot />
+</div>
+
+<style>
+  .container {
+    width: min(92%, var(--ancho-maximo));
+
+    margin-inline: auto;
+  }
+</style>

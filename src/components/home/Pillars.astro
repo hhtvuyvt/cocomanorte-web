@@ -1,0 +1,139 @@
+---
+import Section from "../ui/Section.astro";
+import Card from "../ui/Card.astro";
+import { pillars } from "../../data/pillars";
+---
+
+<Section>
+  <div class="pillars-tree">
+    <div class="root">
+      <h2>Nuestros pilares</h2>
+    </div>
+
+    <div class="branches"></div>
+
+    <div class="grid">
+      {
+        pillars.map((pillar) => (
+          <Card title={pillar.title} description={pillar.description} />
+        ))
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  .pillars-tree {
+    margin-top: 3rem;
+  }
+
+  .root {
+    text-align: center;
+
+    margin-bottom: 4rem;
+
+    position: relative;
+  }
+
+  .root h2 {
+    color: var(--verde-territorio);
+
+    font-size: 2rem;
+  }
+
+  .branches {
+    position: relative;
+
+    height: 50px;
+  }
+
+  /* Línea vertical */
+
+  .branches::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 4px;
+
+    height: 30px;
+
+    background: var(--verde-territorio);
+  }
+
+  /* Línea horizontal */
+
+  .branches::after {
+    content: "";
+
+    position: absolute;
+
+    top: 30px;
+
+    left: 12.5%;
+
+    width: 75%;
+
+    height: 4px;
+
+    background: var(--verde-territorio);
+  }
+
+  .grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 2rem;
+
+    position: relative;
+  }
+
+  /* Una línea para cada tarjeta */
+
+  .grid > * {
+    position: relative;
+  }
+
+  .grid > *::before {
+    content: "";
+
+    position: absolute;
+
+    top: -34px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 3px;
+
+    height: 34px;
+
+    background: var(--verde-territorio);
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 650px) {
+    .branches {
+      display: none;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .grid > *::before {
+      display: none;
+    }
+  }
+</style>

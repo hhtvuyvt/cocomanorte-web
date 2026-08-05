@@ -1,15 +1,41 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+import Section from "../components/ui/Section.astro";
+
+import { organization } from "../data/organization";
 ---
 
 <Layout title="Quiénes somos">
+  <Section>
+    <h1>Quiénes somos</h1>
 
-<h1>
-	Quiénes somos
-</h1>
+    <p>
+      {organization.description}
+    </p>
+  </Section>
 
-<p>
-	Información institucional de COCOMANORTE.
-</p>
+  <Section>
+    <h2>Misión</h2>
 
+    <p>
+      {organization.mission}
+    </p>
+  </Section>
+
+  <Section>
+    <h2>Visión</h2>
+
+    <p>
+      {organization.vision}
+    </p>
+  </Section>
+
+  <Section>
+    <h2>Nuestros valores</h2>
+
+    <ul>
+      {organization.values.map((value) => <li>{value}</li>)}
+    </ul>
+  </Section>
 </Layout>

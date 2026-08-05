@@ -1,0 +1,33 @@
+---
+import Container from "./Container.astro";
+import { navigation } from "../../data/navigation";
+import { site } from "../../data/site";
+---
+
+<header class="header">
+  <Container>
+    <a href="/" class="logo">
+      <div class="logo-icon">
+        <img src="/logo/logo.jpg" alt={site.title} class="logo-image" />
+      </div>
+
+      <div class="logo-text">
+        <span class="nombre"> {site.title} </span>
+
+        <span class="eslogan"> {site.slogan} </span>
+      </div>
+    </a>
+
+    <nav>
+      <ul class="menu">
+        {
+          navigation.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </Container>
+</header>

@@ -1,0 +1,30 @@
+/* =======================================================
+   FOOTER
+   -------------------------------------------------------
+   Estilos del pie de página institucional de COCOMANORTE.
+
+   Responsabilidades:
+
+   - Fondo del footer.
+   - Distribución del contenido.
+   - Tipografía.
+   - Enlaces.
+   - Responsive.
+
+   Proyecto:
+   COCOMANORTE Web
+======================================================= */
+
+.footer {
+  background: var(--verde-territorio);
+
+  color: var(--blanco);
+
+  padding: 2rem 0;
+}
+
+.footer p {
+  margin: 0;
+
+  text-align: center;
+}

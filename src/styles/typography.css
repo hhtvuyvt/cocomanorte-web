@@ -1,0 +1,19 @@
+body {
+  font-family: Inter, sans-serif;
+
+  color: var(--gris-texto);
+
+  line-height: 1.6;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.2rem;
+}
+
+a {
+  text-decoration: none;
+}

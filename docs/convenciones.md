@@ -44,6 +44,8 @@ Utilizar variables CSS.
 
 No repetir colores.
 
+Cuando un componente dependa de la altura visible del navegador, preferir unidades de viewport dinámicas como `svh` en lugar de `vh` si la sección necesita responder a cambios de la interfaz móvil.
+
 ---
 
 ## Componentes

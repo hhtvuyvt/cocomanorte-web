@@ -1,12 +1,13 @@
 ---
-import Button from "./ui/Button.astro";
+import Button from "../ui/Button.astro";
+import { organization } from "../../data/organization";
 ---
 
 <section class="hero">
   <div class="content">
-    <h1>COCOMANORTE</h1>
+    <h1>{organization.name}</h1>
 
-    <h2>Territorio, cultura y conservación</h2>
+    <h2>{organization.slogan}</h2>
 
     <p>
       Fortalecemos nuestra identidad cultural, la protección del territorio
@@ -21,56 +22,53 @@ import Button from "./ui/Button.astro";
 
 <style>
   .hero {
-    min-height: 550px;
-
+    min-height: 78svh;
     display: flex;
-
     align-items: center;
-
+    padding: clamp(24px, 5vw, 64px);
     background:
       linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
       url("/images/territorio.jpg");
-
     background-size: cover;
-
     background-position: center;
-
     color: white;
   }
 
   .content {
-    max-width: 700px;
-
-    padding: 40px;
+    width: min(100%, 700px);
+    padding: clamp(20px, 4vw, 48px);
   }
 
   h1 {
-    font-size: 4rem;
-
+    font-size: clamp(2.3rem, 6vw, 4rem);
+    line-height: 1.05;
     margin: 0;
   }
 
   h2 {
-    font-size: 2rem;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    margin: 0.75rem 0 1rem;
   }
 
   p {
-    font-size: 1.2rem;
-
+    font-size: clamp(1rem, 2vw, 1.2rem);
     line-height: 1.6;
+    margin: 0 0 1.5rem;
   }
 
-  a {
-    display: inline-block;
+  .hero .button {
+    margin-top: 0;
+  }
 
-    margin-top: 25px;
+  @media (max-width: 640px) {
+    .hero {
+      min-height: 520px;
+      background-position: center right;
+    }
 
-    background: #166534;
-
-    padding: 12px 25px;
-
-    color: white;
-
-    border-radius: 8px;
+    .content {
+      width: 100%;
+      padding: 20px 0;
+    }
   }
 </style>

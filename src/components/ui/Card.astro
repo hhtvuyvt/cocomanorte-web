@@ -1,0 +1,67 @@
+---
+/**
+ * ------------------------------------------------------------
+ * COMPONENTE
+ * ------------------------------------------------------------
+ *
+ * Nombre:
+ *      Card
+ *
+ * Descripción:
+ *      Tarjeta reutilizable para mostrar información.
+ *
+ * Responsabilidades:
+ *
+ *      - Mostrar título.
+ *      - Mostrar descripción.
+ *      - Mantener un diseño uniforme.
+ *
+ * Proyecto:
+ *      COCOMANORTE Web
+ * ------------------------------------------------------------
+ */
+
+interface Props {
+  title: string;
+
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<article class="card">
+  <h3>{title}</h3>
+
+  <p>{description}</p>
+</article>
+
+<style>
+  .card {
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 2rem;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+    transition: 0.25s;
+
+    height: 100%;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card h3 {
+    color: var(--verde-territorio);
+
+    margin-top: 0;
+  }
+
+  .card p {
+    margin-bottom: 0;
+  }
+</style>

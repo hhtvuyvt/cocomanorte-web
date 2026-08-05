@@ -98,6 +98,14 @@ Ninguna.
 - `title`
 - `subtitle`
 
+`Section` proporciona la estructura y espaciado general de una sección.
+
+Puede utilizar un título y subtítulo cuando la sección utiliza un encabezado convencional.
+
+Los componentes que necesiten una composición visual especial pueden utilizar `Section` sin `title` ni `subtitle` y controlar internamente su encabezado.
+
+Esto permite mantener la reutilización sin forzar todos los contenidos a utilizar la misma estructura visual.
+
 **Dependencias:**
 
 - Container
@@ -139,3 +147,23 @@ Ninguna.
 - Inicio
 - Quiénes somos
 - Futuras páginas
+
+## Data
+
+### organization.ts
+
+**Descripción:**
+
+Archivo de datos institucionales de COCOMANORTE.
+
+**Responsabilidades:**
+
+- Información general.
+- Misión.
+- Visión.
+- Valores institucionales.
+
+**Utilizado en:**
+
+- Página Quiénes somos.
+- Futuras secciones institucionales.
