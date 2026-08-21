@@ -6,9 +6,13 @@ import "../styles/global.css";
 
 interface Props {
   title?: string;
+  description?: string;
 }
 
-const { title = "COCOMANORTE" } = Astro.props;
+const {
+  title = "COCOMANORTE",
+  description = "Sitio institucional del Consejo Comunitario Mayor COCOMANORTE.",
+} = Astro.props;
 ---
 
 <html lang="es">
@@ -16,6 +20,8 @@ const { title = "COCOMANORTE" } = Astro.props;
     <meta charset="UTF-8" />
 
     <meta name="viewport" content="width=device-width" />
+
+    <meta name="description" content={description} />
 
     <title>{title}</title>
   </head>

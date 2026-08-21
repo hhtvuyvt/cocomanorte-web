@@ -166,8 +166,8 @@ Esto permite que componentes con composiciones especiales controlen su propio en
 - [x] Documentar componentes.
 - [x] Documentar estructura del proyecto.
 - [x] Documentar decisiones importantes.
-- [ ] Revisar y actualizar documentación antes de cerrar Fase 2.
-- [ ] Documentar la versión base del proyecto.
+- [x] Revisar y actualizar documentación antes de cerrar Fase 2.
+- [x] Documentar la versión base del proyecto.
 
 ---
 
@@ -175,15 +175,15 @@ Esto permite que componentes con composiciones especiales controlen su propio en
 
 ### Responsive
 
-- [ ] Revisar Header en escritorio.
-- [ ] Revisar Header en tablet.
-- [ ] Revisar Header en móvil.
-- [ ] Revisar Hero.
-- [ ] Revisar pilares.
-- [ ] Revisar Quiénes somos.
-- [ ] Revisar Footer.
-- [ ] Revisar botones.
-- [ ] Revisar espaciados.
+- [x] Revisar Header en escritorio.
+- [x] Revisar Header en tablet.
+- [x] Revisar Header en móvil.
+- [x] Revisar Hero.
+- [x] Revisar pilares.
+- [x] Revisar Quiénes somos.
+- [x] Revisar Footer.
+- [x] Revisar botones.
+- [x] Revisar espaciados.
 - [ ] Revisar tipografía.
 
 ### Accesibilidad
