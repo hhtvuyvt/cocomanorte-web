@@ -1,0 +1,166 @@
+---
+import { beachesData } from "../../data/beachMonitoring";
+---
+
+<div class="form-container">
+  <h2>Registrar Monitoreo en Tiempo Real</h2>
+  <p class="form-intro">
+    Formulario oficial para la Guardia Comunitaria y Patrulleros de COCOMANORTE.
+  </p>
+
+  <form id="monitoring-form" class="monitoring-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="beach">Playa de Monitoreo *</label>
+        <select id="beach" name="beach" required>
+          {beachesData.map((b) => (
+            <option value={b.name}>{b.name} ({b.zone})</option>
+          ))}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="patroller">Nombre del Patrullero / Guardia *</label>
+        <input type="text" id="patroller" name="patroller" required placeholder="Ej: Pedro Córdoba" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="species">Especie de Tortuga *</label>
+        <select id="species" name="species" required>
+          <option value="Tortuga Caná (Dermochelys coriacea)">Tortuga Caná (Dermochelys coriacea)</option>
+          <option value="Tortuga Carey (Eretmochelys imbricata)">Tortuga Carey (Eretmochelys imbricata)</option>
+          <option value="Tortuga Cahuama (Caretta caretta)">Tortuga Cahuama (Caretta caretta)</option>
+          <option value="Tortuga Verde (Chelonia mydas)">Tortuga Verde (Chelonia mydas)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="eventType">Tipo de Evento *</label>
+        <select id="eventType" name="eventType" required>
+          <option value="Anidación Exitosa">Anidación Exitosa</option>
+          <option value="Liberación de Neonatos">Liberación de Neonatos</option>
+          <option value="Eclosión de Nido">Eclosión de Nido</option>
+          <option value="Avistamiento de Huella">Avistamiento de Huella</option>
+          <option value="Intento Fallido">Intento Fallido</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="eggCount">Número de Huevos (si aplica)</label>
+        <input type="number" id="eggCount" name="eggCount" min="0" placeholder="Ej: 90" />
+      </div>
+
+      <div class="form-group">
+        <label for="hatchlingCount">Neonatos Liberados (si aplica)</label>
+        <input type="number" id="hatchlingCount" name="hatchlingCount" min="0" placeholder="Ej: 85" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Observaciones y Estado del Nido</label>
+      <textarea id="notes" name="notes" rows="3" placeholder="Ubicación exacta, marcado de estaca, condiciones del clima o amenazas observadas..."></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn">
+      📌 Registrar Monitoreo
+    </button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById("monitoring-form");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("✅ Registro de monitoreo de playa enviado exitosamente al sistema de COCOMANORTE.");
+      (form as HTMLFormElement).reset();
+    });
+  }
+</script>
+
+<style>
+  .form-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--verde-territorio, #166534);
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  .form-intro {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+
+  .monitoring-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--verde-territorio, #166534);
+    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
+  }
+
+  .submit-btn {
+    background: var(--verde-territorio, #166534);
+    color: white;
+    font-weight: 700;
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    background: #14532d;
+  }
+</style>
