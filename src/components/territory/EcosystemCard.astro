@@ -1,0 +1,115 @@
+---
+import type { Ecosystem } from "../../data/territory";
+
+interface Props {
+  ecosystem: Ecosystem;
+}
+
+const { ecosystem } = Astro.props;
+---
+
+<div class="ecosystem-card">
+  <div class="badge-row">
+    <span class="type-badge">{ecosystem.type}</span>
+    <span class="status-badge">{ecosystem.conservationStatus}</span>
+  </div>
+  <h3 class="title">{ecosystem.name}</h3>
+  <p class="description">{ecosystem.description}</p>
+
+  <div class="species-container">
+    <span class="species-label">Especies clave de conservación:</span>
+    <div class="species-tags">
+      {ecosystem.keySpecies.map((species) => (
+        <span class="species-tag">🐾 {species}</span>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .ecosystem-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    border-top: 4px solid var(--verde-territorio, #166534);
+    transition: transform 0.2s ease;
+  }
+
+  .ecosystem-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .badge-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .type-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: #e0f2fe;
+    color: var(--azul-caribe, #0369a1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1f2937;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .species-container {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .species-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .species-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .species-tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+  }
+</style>

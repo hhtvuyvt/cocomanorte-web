@@ -1,0 +1,94 @@
+---
+import type { Community } from "../../data/territory";
+
+interface Props {
+  community: Community;
+}
+
+const { community } = Astro.props;
+---
+
+<div class="community-card">
+  <div class="card-header">
+    <span class="location">📍 {community.location}</span>
+    <h3 class="title">{community.name}</h3>
+  </div>
+  <p class="description">{community.description}</p>
+  <div class="highlights">
+    <span class="highlights-label">Destacados comunitarios:</span>
+    <div class="chips">
+      {community.highlights.map((item) => (
+        <span class="chip">{item}</span>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .community-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .community-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  }
+
+  .location {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--tierra-ancestral, #92400e);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0;
+    color: var(--verde-territorio, #166534);
+  }
+
+  .description {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .highlights {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .highlights-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .chip {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+  }
+</style>

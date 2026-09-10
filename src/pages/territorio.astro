@@ -1,20 +1,222 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Section from "../components/ui/Section.astro";
+import CommunityCard from "../components/territory/CommunityCard.astro";
+import EcosystemCard from "../components/territory/EcosystemCard.astro";
+
+import {
+  territoryOverview,
+  communitiesData,
+  ecosystemsData,
+  conservationProjects,
+} from "../data/territory";
 ---
 
 <Layout
-  title="Territorio"
-  description="Territorio colectivo de COCOMANORTE: comunidades, playas, ecosistemas y biodiversidad."
+  title="Territorio Colectivo | COCOMANORTE"
+  description="Explora el territorio colectivo de COCOMANORTE: comunidades, ecosistemas costeros, playas de anidación de tortugas marinas y biodiversidad del Chocó."
 >
+  <!-- Hero / Visión General del Territorio -->
   <Section>
-    <h1>Territorio</h1>
+    <div class="header-content">
+      <span class="badge">Biodiversidad & Vida</span>
+      <h1>Territorio Colectivo</h1>
+      <p class="lead">
+        {territoryOverview.description}
+      </p>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-value">Ecosistemas Costeros</span>
+          <span class="stat-label">Playas, Manglares y Bosque Tropical</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">Titulación Colectiva</span>
+          <span class="stat-label">Inalienable, Imprescriptible e Inembargable</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">Chocó Biogeográfico</span>
+          <span class="stat-label">{territoryOverview.region}</span>
+        </div>
+      </div>
+    </div>
+  </Section>
 
-    <p>
-      Estamos construyendo esta sección con información sobre nuestro territorio
-      colectivo: comunidades, playas de anidación, ecosistemas y biodiversidad.
+  <!-- Comunidades que integran el Territorio -->
+  <Section>
+    <h2>Comunidades y Poblados Ancestrales</h2>
+    <p class="section-desc">
+      Nuestro territorio está conformado por veredas y asentamientos afrodescendientes comprometidos con el cuidado de la tierra y la autonomía.
+    </p>
+    <div class="grid-cards">
+      {communitiesData.map((community) => (
+        <CommunityCard community={community} />
+      ))}
+    </div>
+  </Section>
+
+  <!-- Ecosistemas y Biodiversidad -->
+  <Section>
+    <h2>Ecosistemas de Alta Prioridad de Conservación</h2>
+    <p class="section-desc">
+      Refugio de especies emblemáticas y barreras naturales esenciales ante el cambio climático.
+    </p>
+    <div class="grid-cards">
+      {ecosystemsData.map((ecosystem) => (
+        <EcosystemCard ecosystem={ecosystem} />
+      ))}
+    </div>
+  </Section>
+
+  <!-- Proyectos de Conservación Comunitarios -->
+  <Section>
+    <h2>Proyectos de Conservación y Protección Comunitarios</h2>
+    <p class="section-desc">
+      Iniciativas lideradas por la guardia comunitaria y grupos locales para la preservación de los recursos naturales.
     </p>
 
-    <p>Muy pronto encontrarás aquí contenido detallado.</p>
+    <div class="projects-grid">
+      {conservationProjects.map((project) => (
+        <div class="project-card">
+          <div class="project-header">
+            <span class="focus-badge">{project.focus}</span>
+            <h3>{project.title}</h3>
+          </div>
+          <p>{project.description}</p>
+          <div class="impact-box">
+            <strong>Impacto Comunitario:</strong> {project.impact}
+          </div>
+        </div>
+      ))}
+    </div>
   </Section>
 </Layout>
+
+<style>
+  .header-content {
+    max-width: 850px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 1rem;
+    line-height: 1.1;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 2rem;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .stat-card {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--verde-territorio, #166534);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: var(--verde-territorio, #166534);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    margin-bottom: 2rem;
+  }
+
+  .grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .focus-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--tierra-ancestral, #92400e);
+    background: #fef3c7;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .project-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0.5rem 0 0;
+    color: #111827;
+  }
+
+  .project-card p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .impact-box {
+    margin-top: auto;
+    background: #f9fafb;
+    border-left: 3px solid var(--verde-territorio, #166534);
+    padding: 0.75rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.85rem;
+    color: #374151;
+  }
+</style>

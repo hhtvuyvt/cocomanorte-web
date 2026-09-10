@@ -1,21 +1,234 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Section from "../components/ui/Section.astro";
+import ExperienceCard from "../components/tourism/ExperienceCard.astro";
+import EthicsCard from "../components/tourism/EthicsCard.astro";
+import Button from "../components/ui/Button.astro";
+
+import {
+  tourismOverview,
+  experiencesData,
+  ethicsCodeData,
+  bookingInfo,
+} from "../data/tourism";
 ---
 
 <Layout
-  title="Turismo comunitario"
-  description="Turismo comunitario de COCOMANORTE: experiencias sostenibles desde nuestra cultura y territorio."
+  title="Turismo Comunitario | COCOMANORTE"
+  description="Turismo comunitario y sostenible en COCOMANORTE: conservación de tortugas marinas, rutas de manglar, saberes ancestrales y código de ética del visitante."
 >
+  <!-- Hero / Visión General del Turismo Comunitario -->
   <Section>
-    <h1>Turismo comunitario</h1>
+    <div class="header-content">
+      <span class="badge">Turismo Con Propósito</span>
+      <h1>Turismo Comunitario y Sostenible</h1>
+      <p class="lead">
+        {tourismOverview.description}
+      </p>
 
-    <p>
-      Estamos preparando esta sección con nuestros destinos, experiencias y
-      recomendaciones para visitantes, siempre desde una mirada sostenible y
-      comunitaria.
+      <div class="principles-box">
+        <h3>Nuestros Principios del Turismo Responsable</h3>
+        <ul>
+          {tourismOverview.principles.map((principle) => (
+            <li>🌿 {principle}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Catálogo de Experiencias y Rutas -->
+  <Section>
+    <h2>Experiencias y Rutas Comunitarias</h2>
+    <p class="section-desc">
+      Recorridos guiados por habitantes locales para conocer la biodiversidad y la cultura viva de nuestro territorio.
     </p>
+    <div class="grid-cards">
+      {experiencesData.map((exp) => (
+        <ExperienceCard experience={exp} />
+      ))}
+    </div>
+  </Section>
 
-    <p>Muy pronto encontrarás aquí contenido detallado.</p>
+  <!-- Código de Ética del Visitante -->
+  <Section>
+    <h2>Código de Ética y Decálogo del Visitante</h2>
+    <p class="section-desc">
+      Recomendaciones para asegurar que tu visita respete las dinámicas culturales y no genere impactos ambientales en el colectivo.
+    </p>
+    <div class="ethics-grid">
+      {ethicsCodeData.map((rule) => (
+        <EthicsCard rule={rule} />
+      ))}
+    </div>
+  </Section>
+
+  <!-- Cómo Reservar / Contacto Directo -->
+  <Section>
+    <div class="booking-card">
+      <div class="booking-header">
+        <span class="booking-badge">Coordinación de Visitas</span>
+        <h2>¿Cómo planear tu viaje con COCOMANORTE?</h2>
+        <p>{bookingInfo.notice}</p>
+      </div>
+
+      <div class="steps-container">
+        <h3>Pasos para la reserva:</h3>
+        <ol class="steps-list">
+          {bookingInfo.steps.map((step) => (
+            <li>{step}</li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="action-row">
+        <Button href="/contacto">
+          Contactar al Comité de Turismo
+        </Button>
+      </div>
+    </div>
   </Section>
 </Layout>
+
+<style>
+  .header-content {
+    max-width: 850px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 1rem;
+    line-height: 1.1;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 1.5rem;
+  }
+
+  .principles-box {
+    background: #f0fdf4;
+    border-left: 4px solid var(--verde-territorio, #166534);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 12px 12px 0;
+    margin-top: 1.5rem;
+  }
+
+  .principles-box h3 {
+    font-size: 1.1rem;
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 0.5rem;
+  }
+
+  .principles-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .principles-box li {
+    font-size: 0.95rem;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: var(--verde-territorio, #166534);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    margin-bottom: 2rem;
+  }
+
+  .grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .ethics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .booking-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .booking-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--tierra-ancestral, #92400e);
+    background: #fef3c7;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+  }
+
+  .booking-header h2 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .booking-header p {
+    font-size: 1.05rem;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .steps-container h3 {
+    font-size: 1.1rem;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .steps-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #374151;
+  }
+
+  .steps-list li {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .action-row {
+    margin-top: 0.5rem;
+  }
+</style>

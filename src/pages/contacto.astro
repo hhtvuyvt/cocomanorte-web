@@ -1,21 +1,316 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Section from "../components/ui/Section.astro";
-import { organization } from "../data/organization";
+import Button from "../components/ui/Button.astro";
+import { social } from "../data/social";
 ---
 
 <Layout
-  title="Contacto"
-  description="Canales oficiales de contacto de COCOMANORTE."
+  title="Contacto | COCOMANORTE"
+  description="Canales oficiales de contacto, dirección institucional, redes sociales y atención al visitante de COCOMANORTE."
 >
   <Section>
-    <h1>Contacto</h1>
+    <div class="header-content">
+      <span class="badge">Canales Oficiales</span>
+      <h1>Contacto Institucional</h1>
+      <p class="lead">
+        Ponte en contacto con el Consejo Comunitario Mayor COCOMANORTE para consultas institucionales, alianzas de conservación o turismo comunitario.
+      </p>
+    </div>
+  </Section>
 
-    <p>
-      {organization.name} está trabajando en habilitar sus canales oficiales de contacto
-      y redes sociales en este sitio.
-    </p>
+  <Section>
+    <div class="contact-grid">
+      <!-- Información Directa -->
+      <div class="info-card">
+        <h2>Información de Atención</h2>
 
-    <p>Muy pronto encontrarás aquí nuestra información de contacto.</p>
+        <div class="channel-list">
+          <div class="channel-item">
+            <span class="icon">📍</span>
+            <div>
+              <strong>Ubicación y Sede Principal:</strong>
+              <p>{social.address}</p>
+            </div>
+          </div>
+
+          <div class="channel-item">
+            <span class="icon">✉️</span>
+            <div>
+              <strong>Correo Electrónico Oficial:</strong>
+              <p><a href={`mailto:${social.email}`}>{social.email}</a></p>
+            </div>
+          </div>
+
+          <div class="channel-item">
+            <span class="icon">📞</span>
+            <div>
+              <strong>Teléfono & WhatsApp:</strong>
+              <p><a href={`https://wa.me/${social.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer">{social.phone}</a></p>
+            </div>
+          </div>
+
+          <div class="channel-item">
+            <span class="icon">🕒</span>
+            <div>
+              <strong>Horarios de Atención:</strong>
+              <p>{social.workingHours}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="social-links-box">
+          <h3>Redes Sociales Oficiales</h3>
+          <div class="social-buttons">
+            <a href={social.facebook} target="_blank" rel="noopener noreferrer" class="social-btn facebook">
+              Facebook
+            </a>
+            <a href={social.instagram} target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+              Instagram
+            </a>
+            <a href={social.youtube} target="_blank" rel="noopener noreferrer" class="social-btn youtube">
+              YouTube
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Mensajes Directos -->
+      <div class="form-card">
+        <h2>Envíanos un Mensaje</h2>
+        <p class="form-desc">Completa el formulario y nos comunicaremos contigo lo antes posible.</p>
+
+        <form class="contact-form" action="#" method="POST" onsubmit="event.preventDefault(); alert('¡Gracias por tu mensaje! Nos pondremos en contacto pronto.');">
+          <div class="form-group">
+            <label for="name">Nombre Completo *</label>
+            <input type="text" id="name" name="name" required placeholder="Tu nombre" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo Electrónico *</label>
+            <input type="email" id="email" name="email" required placeholder="tu@correo.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Asunto / Motivo *</label>
+            <select id="subject" name="subject" required>
+              <option value="institucional">Consulta Institucional / Alianzas</option>
+              <option value="turismo">Turismo Comunitario y Visitas</option>
+              <option value="conservacion">Proyectos de Conservación</option>
+              <option value="otro">Otro Asunto</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Mensaje *</label>
+            <textarea id="message" name="message" rows="5" required placeholder="Escribe tu mensaje aquí..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Enviar Mensaje
+          </button>
+        </form>
+      </div>
+    </div>
   </Section>
 </Layout>
+
+<style>
+  .header-content {
+    max-width: 800px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 1rem;
+    line-height: 1.1;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #374151;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .info-card,
+  .form-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--verde-territorio, #166534);
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .channel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .channel-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .channel-item .icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    background: #f0fdf4;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #bbf7d0;
+  }
+
+  .channel-item strong {
+    font-size: 0.9rem;
+    color: #111827;
+  }
+
+  .channel-item p {
+    margin: 0.2rem 0 0;
+    font-size: 0.95rem;
+    color: #4b5563;
+  }
+
+  .channel-item a {
+    color: var(--verde-territorio, #166534);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .social-links-box {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .social-links-box h3 {
+    font-size: 1.1rem;
+    color: #111827;
+    margin: 0 0 1rem;
+  }
+
+  .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .social-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    transition: opacity 0.2s ease;
+  }
+
+  .social-btn:hover {
+    opacity: 0.9;
+  }
+
+  .facebook {
+    background: #1877f2;
+  }
+
+  .instagram {
+    background: #e4405f;
+  }
+
+  .youtube {
+    background: #ff0000;
+  }
+
+  .form-desc {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--verde-territorio, #166534);
+    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
+  }
+
+  .submit-btn {
+    background: var(--verde-territorio, #166534);
+    color: white;
+    font-weight: 700;
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    background: #14532d;
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+import type { EthicsRule } from "../../data/tourism";
+
+interface Props {
+  rule: EthicsRule;
+}
+
+const { rule } = Astro.props;
+---
+
+<div class="ethics-card">
+  <div class="icon-box">
+    <span class="icon">{rule.icon}</span>
+  </div>
+  <div class="content">
+    <span class="principle">{rule.principle}</span>
+    <h3 class="title">{rule.title}</h3>
+    <p class="description">{rule.description}</p>
+  </div>
+</div>
+
+<style>
+  .ethics-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+  }
+
+  .principle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--verde-territorio, #166534);
+    letter-spacing: 0.05em;
+  }
+
+  .title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0.2rem 0 0.4rem;
+    color: #111827;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.4;
+    margin: 0;
+  }
+</style>
