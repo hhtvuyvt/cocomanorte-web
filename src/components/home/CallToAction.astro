@@ -1,36 +1,62 @@
+---
+import Button from "../ui/Button.astro";
+---
+
 <section class="cta">
-  <h2>Conoce nuestro territorio</h2>
+  <div class="cta-container">
+    <h2>Participa en la Conservación de Nuestro Territorio</h2>
 
-  <p>
-    Descubre nuestra historia, nuestros procesos comunitarios y nuestras
-    iniciativas.
-  </p>
+    <p>
+      Descubre la biodiversidad del Chocó, apoya las iniciativas de turismo comunitario sostenible y consulta el sistema de monitoreo de playas en tiempo real.
+    </p>
 
-  <a href="/territorio"> Explorar territorio </a>
+    <div class="cta-buttons">
+      <Button href="/territorio" variant="primary">
+        Explorar Territorio
+      </Button>
+
+      <Button href="/monitoreo" variant="secondary">
+        Monitoreo de Playas
+      </Button>
+
+      <Button href="/turismo" variant="secondary">
+        Turismo Comunitario
+      </Button>
+    </div>
+  </div>
 </section>
 
 <style>
   .cta {
     margin-top: 60px;
-
     padding: 60px 20px;
-
     text-align: center;
-
     background: #dcfce7;
   }
 
-  a {
-    display: inline-block;
+  .cta-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-    margin-top: 20px;
+  h2 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    color: var(--verde-territorio, #166534);
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
 
-    background: #166534;
+  p {
+    font-size: 1.1rem;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
 
-    color: white;
-
-    padding: 12px 25px;
-
-    border-radius: 8px;
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 </style>
