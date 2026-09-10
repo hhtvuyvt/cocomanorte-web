@@ -1,0 +1,135 @@
+---
+import type { Beach } from "../../data/beachMonitoring";
+
+interface Props {
+  beach: Beach;
+}
+
+const { beach } = Astro.props;
+---
+
+<div class="beach-card">
+  <div class="header">
+    <span class="status-indicator active">● {beach.status}</span>
+    <h3 class="title">{beach.name}</h3>
+    <span class="zone">📍 {beach.zone} ({beach.lengthKm} km)</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <span class="value">{beach.activeNests}</span>
+      <span class="label">Nidos Activos</span>
+    </div>
+    <div class="stat-box">
+      <span class="value">{beach.releasedHatchlings.toLocaleString()}</span>
+      <span class="label">Neonatos Liberados</span>
+    </div>
+  </div>
+
+  <div class="footer-meta">
+    <div class="meta-item">
+      <span class="meta-label">Último patrullaje:</span>
+      <span class="meta-value">{beach.lastPatrol}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Responsable:</span>
+      <span class="meta-value">{beach.patrolLeader}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .beach-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    border-top: 4px solid var(--verde-territorio, #166534);
+    transition: transform 0.2s ease;
+  }
+
+  .beach-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .status-indicator {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--verde-territorio, #166534);
+    background: #dcfce7;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    color: #111827;
+  }
+
+  .zone {
+    font-size: 0.85rem;
+    color: #6b7280;
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    background: #f9fafb;
+    padding: 0.85rem;
+    border-radius: 8px;
+  }
+
+  .stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--verde-territorio, #166534);
+  }
+
+  .label {
+    font-size: 0.75rem;
+    color: #4b5563;
+    font-weight: 600;
+  }
+
+  .footer-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 0.75rem;
+  }
+
+  .meta-item {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .meta-label {
+    color: #6b7280;
+  }
+
+  .meta-value {
+    font-weight: 600;
+    color: #1f2937;
+  }
+</style>

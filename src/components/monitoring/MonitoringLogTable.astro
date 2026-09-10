@@ -1,0 +1,121 @@
+---
+import type { MonitoringLog } from "../../data/beachMonitoring";
+
+interface Props {
+  logs: MonitoringLog[];
+}
+
+const { logs } = Astro.props;
+---
+
+<div class="table-container">
+  <table class="monitoring-table">
+    <thead>
+      <tr>
+        <th>Fecha / Hora</th>
+        <th>Playa</th>
+        <th>Especie</th>
+        <th>Evento</th>
+        <th>Registros</th>
+        <th>Patrullero / Guardia</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        logs.map((log) => (
+          <tr>
+            <td>
+              <div class="date-cell">
+                <span class="date">{log.date}</span>
+                <span class="time">{log.time}</span>
+              </div>
+            </td>
+            <td><strong>{log.beachName}</strong></td>
+            <td><span class="species-tag">{log.turtleSpecies}</span></td>
+            <td><span class="event-badge">{log.eventType}</span></td>
+            <td>
+              {log.eggCount && <span>🪺 {log.eggCount} huevos</span>}
+              {log.hatchlingCount && <span>🐢 {log.hatchlingCount} neonatos</span>}
+              {!log.eggCount && !log.hatchlingCount && <span class="muted">-</span>}
+            </td>
+            <td>{log.patrollerName}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .table-container {
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .monitoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+
+  .monitoring-table th {
+    background: #f9fafb;
+    padding: 0.85rem 1rem;
+    font-weight: 700;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .monitoring-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+  }
+
+  .monitoring-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .date-cell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .date {
+    font-weight: 600;
+  }
+
+  .time {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+
+  .species-tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--tierra-ancestral, #92400e);
+    background: #fef3c7;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .event-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--verde-territorio, #166534);
+    background: #dcfce7;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .muted {
+    color: #9ca3af;
+  }
+</style>

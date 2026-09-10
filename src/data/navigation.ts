@@ -16,6 +16,10 @@ export const navigation = [
     href: "/turismo",
   },
   {
+    label: "Monitoreo",
+    href: "/monitoreo",
+  },
+  {
     label: "Contacto",
     href: "/contacto",
   },
