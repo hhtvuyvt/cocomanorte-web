@@ -2,13 +2,14 @@
 import Container from "./Container.astro";
 import { navigation } from "../../data/navigation";
 import { site } from "../../data/site";
+import { getRelativeUrl } from "../../utils/url";
 ---
 
 <header class="header">
   <Container>
-    <a href="/" class="logo">
+    <a href={getRelativeUrl("/")} class="logo">
       <div class="logo-icon">
-        <img src="/logo/logo.jpg" alt={site.title} class="logo-image" />
+        <img src={getRelativeUrl("/logo/logo.jpg")} alt={site.title} class="logo-image" />
       </div>
 
       <div class="logo-text">
@@ -35,7 +36,7 @@ import { site } from "../../data/site";
         {
           navigation.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a href={getRelativeUrl(item.href)}>{item.label}</a>
             </li>
           ))
         }

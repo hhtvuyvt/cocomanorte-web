@@ -1,6 +1,7 @@
 ---
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import { getRelativeUrl } from "../utils/url";
 
 import "../styles/global.css";
 
@@ -16,14 +17,14 @@ const {
   image = "/images/territorio.jpg",
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://cocomanorte.org");
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://hhtvuyvt.github.io");
 ---
 
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/jpeg" href="/logo/logo.jpg" />
+    <link rel="icon" type="image/jpeg" href={getRelativeUrl("/logo/logo.jpg")} />
 
     <!-- SEO Meta Tags -->
     <title>{title}</title>
@@ -35,14 +36,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://cocomano
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, canonicalURL)} />
+    <meta property="og:image" content={new URL(getRelativeUrl(image), canonicalURL)} />
 
     <!-- Twitter Cards -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, canonicalURL)} />
+    <meta property="twitter:image" content={new URL(getRelativeUrl(image), canonicalURL)} />
   </head>
 
   <body>
