@@ -18,7 +18,19 @@ import { site } from "../../data/site";
       </div>
     </a>
 
-    <nav>
+    <!-- Botón Menú Hamburguesa Móvil -->
+    <button
+      id="menu-toggle"
+      class="mobile-toggle"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+    >
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <nav id="nav-menu" class="nav-container">
       <ul class="menu">
         {
           navigation.map((item) => (
@@ -31,3 +43,17 @@ import { site } from "../../data/site";
     </nav>
   </Container>
 </header>
+
+<script>
+  const toggleBtn = document.getElementById("menu-toggle");
+  const navMenu = document.getElementById("nav-menu");
+
+  if (toggleBtn && navMenu) {
+    toggleBtn.addEventListener("click", () => {
+      const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+      toggleBtn.setAttribute("aria-expanded", (!isExpanded).toString());
+      toggleBtn.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    });
+  }
+</script>
