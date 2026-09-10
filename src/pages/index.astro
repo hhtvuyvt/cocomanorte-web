@@ -1,17 +1,260 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
+import Section from "../components/ui/Section.astro";
 import Hero from "../components/home/Hero.astro";
-
 import Pillars from "../components/home/Pillars.astro";
-
 import CallToAction from "../components/home/CallToAction.astro";
+import Button from "../components/ui/Button.astro";
+
+import { beachesData } from "../data/beachMonitoring";
+import { experiencesData } from "../data/tourism";
+import { communitiesData } from "../data/territory";
 ---
 
-<Layout title="Inicio" description="Sitio institucional COCOMANORTE">
+<Layout
+  title="COCOMANORTE | Consejo Comunitario Mayor"
+  description="Sitio institucional del Consejo Comunitario Mayor COCOMANORTE: autogobierno, protección del territorio colectivo, conservación de tortugas marinas y turismo comunitario en el Chocó."
+>
+  <!-- Hero Principal -->
   <Hero />
 
+  <!-- Cifras e Impacto del Territorio Colectivo -->
+  <Section>
+    <div class="impact-banner">
+      <div class="impact-item">
+        <span class="impact-number">3</span>
+        <span class="impact-label">Comunidades Ancestrales</span>
+      </div>
+      <div class="impact-item">
+        <span class="impact-number">295</span>
+        <span class="impact-label">Nidos Activos de Tortuga Caná</span>
+      </div>
+      <div class="impact-item">
+        <span class="impact-number">7,400+</span>
+        <span class="impact-label">Neonatos Liberados (2025)</span>
+      </div>
+      <div class="impact-item">
+        <span class="impact-number">100%</span>
+        <span class="impact-label">Autonomía y Gobierno Propio</span>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Pilares Institucionales -->
   <Pillars />
 
+  <!-- Módulo Destacado: Monitoreo en Tiempo Real -->
+  <Section>
+    <div class="featured-card monitoring-spotlight">
+      <div class="featured-content">
+        <span class="badge-featured">Monitoreo Territorial</span>
+        <h2>Sistema de Vigilancia y Monitoreo de Playas</h2>
+        <p>
+          Recopilamos en tiempo real datos físicos, ambientales, de conservación y amenazas de las playas de anidación de tortugas marinas en el Departamento del Chocó para la toma de decisiones comunitarias.
+        </p>
+        <div class="spotlight-stats">
+          {beachesData.map((b) => (
+            <div class="spotlight-chip">
+              <strong>{b.name}:</strong> {b.activeNests} nidos activos ({b.status})
+            </div>
+          ))}
+        </div>
+        <div class="action-wrap">
+          <Button href="/monitoreo" variant="primary">
+            Consultar Sistema de Monitoreo
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Módulo Destacado: Territorio y Turismo Comunitario -->
+  <Section>
+    <div class="home-grid-2">
+      <!-- Territorio Colectivo -->
+      <div class="info-preview-card">
+        <span class="badge-sub">Biodiversidad & Vida</span>
+        <h3>Territorio Colectivo</h3>
+        <p>
+          Santuario natural de playas de anidación, manglares y bosques tropicales custodiados por nuestras comunidades afrodescendientes.
+        </p>
+        <ul class="preview-list">
+          {communitiesData.map((c) => (
+            <li>📍 {c.name}</li>
+          ))}
+        </ul>
+        <Button href="/territorio" variant="secondary">
+          Conoce el Territorio
+        </Button>
+      </div>
+
+      <!-- Turismo Comunitario -->
+      <div class="info-preview-card">
+        <span class="badge-sub">Turismo Con Propósito</span>
+        <h3>Turismo Comunitario y Sostenible</h3>
+        <p>
+          Experiencias responsables guiadas por habitantes locales para conocer nuestra cultura, conservación y saberes ancestrales.
+        </p>
+        <ul class="preview-list">
+          {experiencesData.slice(0, 3).map((e) => (
+            <li>🌿 {e.title}</li>
+          ))}
+        </ul>
+        <Button href="/turismo" variant="secondary">
+          Ver Experiencias
+        </Button>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Llamado a la Acción / CTA -->
   <CallToAction />
 </Layout>
+
+<style>
+  .impact-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .impact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .impact-number {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    color: var(--verde-territorio, #166534);
+    line-height: 1;
+  }
+
+  .impact-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-top: 0.5rem;
+  }
+
+  .featured-card {
+    background: #ffffff;
+    border: 1px solid #bbf7d0;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    background-image: linear-gradient(to bottom right, #ffffff, #f0fdf4);
+  }
+
+  .badge-featured {
+    display: inline-block;
+    background: var(--verde-territorio, #166534);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .featured-content h2 {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 0.75rem;
+  }
+
+  .featured-content p {
+    font-size: 1.1rem;
+    color: #374151;
+    line-height: 1.6;
+    max-width: 800px;
+    margin-bottom: 1.5rem;
+  }
+
+  .spotlight-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .spotlight-chip {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #1f2937;
+  }
+
+  .spotlight-chip strong {
+    color: var(--verde-territorio, #166534);
+  }
+
+  .home-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+
+  .info-preview-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .badge-sub {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--tierra-ancestral, #92400e);
+    background: #fef3c7;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+  .info-preview-card h3 {
+    font-size: 1.4rem;
+    color: #111827;
+    margin: 0;
+  }
+
+  .info-preview-card p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .preview-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  .info-preview-card .button {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+</style>
