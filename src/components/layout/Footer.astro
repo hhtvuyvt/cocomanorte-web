@@ -1,12 +1,56 @@
 ---
 import Container from "./Container.astro";
+import { navigation } from "../../data/navigation";
 import { site } from "../../data/site";
+import { social } from "../../data/social";
 ---
 
-<footer>
+<footer class="footer">
   <Container>
-    <p>© {site.title}</p>
+    <div class="footer-grid">
+      <!-- Columna 1: Branding -->
+      <div class="footer-col brand-col">
+        <div class="footer-logo">
+          <img src="/logo/logo.jpg" alt={site.title} class="footer-logo-img" />
+          <span class="footer-title">{site.title}</span>
+        </div>
+        <p class="footer-slogan">{site.slogan}</p>
+        <p class="footer-desc">
+          Organización comunitaria orientada al fortalecimiento cultural, la protección del territorio colectivo y la conservación ambiental en el Departamento del Chocó.
+        </p>
+      </div>
 
-    <p>Territorio, cultura y conservación</p>
+      <!-- Columna 2: Navegación Rápida -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Navegación</h4>
+        <ul class="footer-links">
+          {
+            navigation.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Columna 3: Contacto & Sede -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Atención e Información</h4>
+        <p class="footer-contact-item">📍 {social.address}</p>
+        <p class="footer-contact-item">✉️ <a href={`mailto:${social.email}`}>{social.email}</a></p>
+        <p class="footer-contact-item">📞 <a href={`https://wa.me/${social.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer">{social.phone}</a></p>
+
+        <div class="footer-socials">
+          <a href={social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook COCOMANORTE">Facebook</a>
+          <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram COCOMANORTE">Instagram</a>
+          <a href={social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube COCOMANORTE">YouTube</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {new Date().getFullYear()} {site.title}. Todos los derechos reservados. Territorio, Cultura y Conservación.</p>
+    </div>
   </Container>
 </footer>
