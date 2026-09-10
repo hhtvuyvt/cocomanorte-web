@@ -3,6 +3,7 @@ import Container from "./Container.astro";
 import { navigation } from "../../data/navigation";
 import { site } from "../../data/site";
 import { social } from "../../data/social";
+import { getRelativeUrl } from "../../utils/url";
 ---
 
 <footer class="footer">
@@ -11,7 +12,7 @@ import { social } from "../../data/social";
       <!-- Columna 1: Branding -->
       <div class="footer-col brand-col">
         <div class="footer-logo">
-          <img src="/logo/logo.jpg" alt={site.title} class="footer-logo-img" />
+          <img src={getRelativeUrl("/logo/logo.jpg")} alt={site.title} class="footer-logo-img" />
           <span class="footer-title">{site.title}</span>
         </div>
         <p class="footer-slogan">{site.slogan}</p>
@@ -27,7 +28,7 @@ import { social } from "../../data/social";
           {
             navigation.map((item) => (
               <li>
-                <a href={item.href}>{item.label}</a>
+                <a href={getRelativeUrl(item.href)}>{item.label}</a>
               </li>
             ))
           }
