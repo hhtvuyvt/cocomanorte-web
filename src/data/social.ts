@@ -8,5 +8,5 @@ export const social = {
   workingHours: "Lunes a Viernes: 8:00 AM - 12:00 PM | 2:00 PM - 5:00 PM",
   facebook: "https://facebook.com/cocomanorte",
   instagram: "https://instagram.com/cocomanorte",
-  youtube: "https://youtube.com/@cocomanorte",
+  youtube: "https://www.youtube.com/@cocomanortetelevision2779",
 };
