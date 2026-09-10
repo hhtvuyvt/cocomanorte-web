@@ -1,0 +1,110 @@
+---
+import type { HistoryMilestone } from "../../data/history";
+
+interface Props {
+  milestones: HistoryMilestone[];
+}
+
+const { milestones } = Astro.props;
+---
+
+<div class="timeline">
+  {
+    milestones.map((item, index) => (
+      <div class="timeline-item">
+        <div class="timeline-badge">
+          <span class="badge-dot" />
+        </div>
+        <div class="timeline-content">
+          <span class="year-badge">{item.year}</span>
+          <h3 class="title">{item.title}</h3>
+          <p class="description">{item.description}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 11px;
+    width: 3px;
+    background: var(--verde-claro, #dcfce7);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .timeline-badge {
+    position: absolute;
+    left: -2rem;
+    top: 0.25rem;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--verde-territorio, #166534);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--verde-territorio, #166534);
+  }
+
+  .timeline-content {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    width: 100%;
+  }
+
+  .year-badge {
+    display: inline-block;
+    background: var(--arena, #fde68a);
+    color: var(--tierra-ancestral, #92400e);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0.5rem;
+    color: #111827;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+  }
+</style>

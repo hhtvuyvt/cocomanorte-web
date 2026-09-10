@@ -1,0 +1,92 @@
+---
+import type { GovernanceMember } from "../../data/governance";
+
+interface Props {
+  member: GovernanceMember;
+}
+
+const { member } = Astro.props;
+---
+
+<div class="member-card">
+  <div class="avatar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+      <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.6-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+    </svg>
+  </div>
+  <div class="details">
+    <span class="role">{member.role}</span>
+    <h3 class="name">{member.name}</h3>
+    {member.community && <span class="community">📍 {member.community}</span>}
+    {member.description && <p class="description">{member.description}</p>}
+  </div>
+</div>
+
+<style>
+  .member-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .member-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  }
+
+  .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .role {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--verde-territorio, #166534);
+  }
+
+  .name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1f2937;
+  }
+
+  .community {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+</style>

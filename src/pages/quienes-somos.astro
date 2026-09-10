@@ -1,41 +1,230 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
 import Section from "../components/ui/Section.astro";
+import MemberCard from "../components/governance/MemberCard.astro";
+import Timeline from "../components/governance/Timeline.astro";
+import DocumentCard from "../components/governance/DocumentCard.astro";
 
 import { organization } from "../data/organization";
+import { governanceData } from "../data/governance";
+import { historyTimeline } from "../data/history";
+import { officialDocuments } from "../data/documents";
 ---
 
-<Layout title="Quiénes somos">
+<Layout
+  title="Quiénes somos | COCOMANORTE"
+  description="Conoce la historia, estructura de gobierno propio, representantes y documentos oficiales del Consejo Comunitario Mayor COCOMANORTE."
+>
+  <!-- Encabezado Institucional -->
   <Section>
-    <h1>Quiénes somos</h1>
-
-    <p>
-      {organization.description}
-    </p>
+    <div class="header-content">
+      <span class="badge">Estructura & Gobierno Propio</span>
+      <h1>Quiénes somos</h1>
+      <p class="lead">
+        {organization.description}
+      </p>
+    </div>
   </Section>
 
+  <!-- Misión y Visión -->
   <Section>
-    <h2>Misión</h2>
-
-    <p>
-      {organization.mission}
-    </p>
+    <div class="grid-2">
+      <div class="box">
+        <h2>Misión</h2>
+        <p>{organization.mission}</p>
+      </div>
+      <div class="box">
+        <h2>Visión</h2>
+        <p>{organization.vision}</p>
+      </div>
+    </div>
   </Section>
 
+  <!-- Valores Institucionales -->
   <Section>
-    <h2>Visión</h2>
-
-    <p>
-      {organization.vision}
-    </p>
+    <h2>Nuestros valores territoriales</h2>
+    <div class="values-grid">
+      {organization.values.map((value) => (
+        <div class="value-chip">
+          <span>🌿</span>
+          <span>{value}</span>
+        </div>
+      ))}
+    </div>
   </Section>
 
+  <!-- Historia y Línea del Tiempo -->
   <Section>
-    <h2>Nuestros valores</h2>
+    <h2>Nuestra Historia y Línea del Tiempo</h2>
+    <p class="section-desc">
+      Hitos organizativos en la defensa de nuestro territorio ancestral, titulación colectiva y autogobierno.
+    </p>
+    <Timeline milestones={historyTimeline} />
+  </Section>
 
-    <ul>
-      {organization.values.map((value) => <li>{value}</li>)}
-    </ul>
+  <!-- Estructura Organizativa y Gobierno Propio -->
+  <Section>
+    <h2>Estructura de Gobierno Propio y Autoridades</h2>
+    <p class="section-desc">
+      Conoce la organización interna y los comités comunitarios que orientan la gestión de COCOMANORTE.
+    </p>
+
+    {governanceData.map((body) => (
+      <div class="governance-block">
+        <div class="block-header">
+          <h3>{body.title}</h3>
+          <p>{body.description}</p>
+        </div>
+        <div class="members-grid">
+          {body.members.map((member) => (
+            <MemberCard member={member} />
+          ))}
+        </div>
+      </div>
+    ))}
+  </Section>
+
+  <!-- Documentos Oficiales y Transparencia -->
+  <Section>
+    <h2>Documentos Oficiales y Transparencia</h2>
+    <p class="section-desc">
+      Accede a nuestros reglamentos internos, estatutos, normativas ambientales e informes de gestión.
+    </p>
+    <div class="docs-grid">
+      {officialDocuments.map((doc) => (
+        <DocumentCard document={doc} />
+      ))}
+    </div>
   </Section>
 </Layout>
+
+<style>
+  .header-content {
+    max-width: 800px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 1rem;
+    line-height: 1.1;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #374151;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: var(--verde-territorio, #166534);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    margin-bottom: 2rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .box {
+    background: #f9fafb;
+    border-left: 4px solid var(--verde-territorio, #166534);
+    padding: 1.75rem;
+    border-radius: 0 12px 12px 0;
+  }
+
+  .box h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+  }
+
+  .box p {
+    margin: 0;
+    line-height: 1.6;
+    color: #374151;
+  }
+
+  .values-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .value-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 600;
+    color: #1f2937;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .governance-block {
+    margin-bottom: 3rem;
+  }
+
+  .block-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .block-header h3 {
+    font-size: 1.35rem;
+    color: #111827;
+    margin: 0 0 0.25rem;
+  }
+
+  .block-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  .members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .members-grid,
+    .docs-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
