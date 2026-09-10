@@ -9,31 +9,36 @@ import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
 ---
 
 <Layout
-  title="Monitoreo de Playas en Tiempo Real | COCOMANORTE"
-  description="Sistema de registro y monitoreo en tiempo real de playas de anidación de tortugas marinas del Consejo Comunitario Mayor COCOMANORTE."
+  title="Monitoreo Integral de Playas del Chocó | COCOMANORTE"
+  description="Sistema de monitoreo ambiental, físico, social y cultural de las playas del Departamento del Chocó - Consejo Comunitario Mayor COCOMANORTE."
 >
   <!-- Encabezado del Sistema de Monitoreo -->
   <Section>
     <div class="header-content">
-      <span class="badge">Sistema Comunitario de Datos</span>
-      <h1>Monitoreo de Playas en Tiempo Real</h1>
-      <p class="lead">
-        Plataforma oficial de COCOMANORTE para el seguimiento, registro de nidos, eclosiones y vigilancia comunitaria de las playas de anidación en el territorio colectivo.
-      </p>
+      <span class="badge">Protocolo de Monitoreo Territorial - Depto. del Chocó</span>
+      <h1>Monitoreo Integral de Playas</h1>
+
+      <!-- Objetivo Oficial -->
+      <div class="objective-box">
+        <h3>Objetivo del Monitoreo</h3>
+        <p>
+          Realizar un monitoreo integral de las playas del territorio del departamento del Chocó que permita conocer los cambios ambientales, físicos, sociales y culturales que ocurren en cada zona, generando información útil para la conservación de los ecosistemas costeros y para la toma de decisiones por parte de las comunidades y entidades responsables.
+        </p>
+      </div>
 
       <!-- Resumen Global de Datos -->
       <div class="summary-cards">
         <div class="summary-box">
           <span class="summary-num">295</span>
-          <span class="summary-label">Total Nidos Activos</span>
+          <span class="summary-label">Nidos Protegidos (2025)</span>
         </div>
         <div class="summary-box">
           <span class="summary-num">7,400+</span>
-          <span class="summary-label">Neonatos Liberados (2025)</span>
+          <span class="summary-label">Neonatos Liberados</span>
         </div>
         <div class="summary-box">
           <span class="summary-num">3 Playas</span>
-          <span class="summary-label">Sectores bajo Monitoreo</span>
+          <span class="summary-label">Sectores bajo Vigilancia</span>
         </div>
       </div>
     </div>
@@ -41,9 +46,9 @@ import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
 
   <!-- Estado de las Playas en Tiempo Real -->
   <Section>
-    <h2>Estado Actual de las Playas de Anidación</h2>
+    <h2>Estado Actual de las Playas Monitoreadas</h2>
     <p class="section-desc">
-      Reporte de actividad, nivel de amenaza y conteo de nidos actualizados por los comités de guardia comunitarios.
+      Reporte de caracterización física, nivel de amenaza y conteo de nidos actualizados por los comités comunitarios.
     </p>
 
     <div class="beaches-grid">
@@ -55,15 +60,15 @@ import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
 
   <!-- Tabla de Registros Recientes -->
   <Section>
-    <h2>Últimos Registros de Patrullaje y Anidación</h2>
+    <h2>Bitácora de Patrullaje y Eventos Recientes</h2>
     <p class="section-desc">
-      Bitácora en tiempo real de eventos reportados en las playas del territorio.
+      Registros en tiempo real de anidaciones, eclosiones y avistamientos en el colectivo.
     </p>
 
     <MonitoringLogTable logs={monitoringLogsData} />
   </Section>
 
-  <!-- Formulario de Registro para Patrulleros -->
+  <!-- Formulario de Registro Oficial -->
   <Section>
     <MonitoringForm />
   </Section>
@@ -94,11 +99,25 @@ import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
     line-height: 1.1;
   }
 
-  .lead {
-    font-size: 1.2rem;
-    line-height: 1.6;
+  .objective-box {
+    background: #f0fdf4;
+    border-left: 4px solid var(--verde-territorio, #166534);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 12px 12px 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .objective-box h3 {
+    font-size: 1.1rem;
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 0.5rem;
+  }
+
+  .objective-box p {
+    font-size: 0.95rem;
     color: #374151;
-    margin-bottom: 2rem;
+    line-height: 1.6;
+    margin: 0;
   }
 
   .summary-cards {
@@ -109,14 +128,15 @@ import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
   }
 
   .summary-box {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
   }
 
   .summary-num {

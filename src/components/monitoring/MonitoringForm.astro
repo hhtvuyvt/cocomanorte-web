@@ -3,71 +3,295 @@ import { beachesData } from "../../data/beachMonitoring";
 ---
 
 <div class="form-container">
-  <h2>Registrar Monitoreo en Tiempo Real</h2>
-  <p class="form-intro">
-    Formulario oficial para la Guardia Comunitaria y Patrulleros de COCOMANORTE.
-  </p>
+  <div class="form-header">
+    <span class="badge-protocol">Protocolo de Monitoreo - Depto. del Chocó</span>
+    <h2>Informe de Monitoreo Integral de Playas</h2>
+    <p class="form-intro">
+      Formulario de registro para la Guardia Comunitaria, sabedores y patrulleros de COCOMANORTE. Los campos marcados con <strong>*</strong> son obligatorios para enviar la planilla.
+    </p>
+  </div>
 
   <form id="monitoring-form" class="monitoring-form">
-    <div class="form-row">
-      <div class="form-group">
-        <label for="beach">Playa de Monitoreo *</label>
-        <select id="beach" name="beach" required>
-          {beachesData.map((b) => (
-            <option value={b.name}>{b.name} ({b.zone})</option>
-          ))}
-        </select>
+    <!-- METADATA Y DATOS BÁSICOS -->
+    <fieldset class="form-section">
+      <legend>0. Información Básica de la Jornada</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="beach">Playa de Monitoreo *</label>
+          <select id="beach" name="beachName" required>
+            <option value="">-- Selecciona la playa --</option>
+            {beachesData.map((b) => (
+              <option value={b.name}>{b.name} ({b.zone})</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="community">Comunidad / Consejo Local *</label>
+          <input type="text" id="community" name="community" required placeholder="Ej: La Playona, Acandí Seco, San Francisco..." />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="observer">Nombre del Monitor / Guardia *</label>
+          <input type="text" id="observer" name="observerName" required placeholder="Nombre y apellidos del responsable" />
+        </div>
+
+        <div class="form-group">
+          <label for="date">Fecha del Monitoreo *</label>
+          <input type="date" id="date" name="date" required />
+        </div>
+
+        <div class="form-group">
+          <label for="startTime">Hora de Inicio *</label>
+          <input type="time" id="startTime" name="startTime" required />
+        </div>
+
+        <div class="form-group">
+          <label for="endTime">Hora de Finalización</label>
+          <input type="time" id="endTime" name="endTime" />
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- 1. CARACTERIZACIÓN FÍSICA DE LAS PLAYAS -->
+    <fieldset class="form-section">
+      <legend>1. Caracterización Física de la Playa</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="beachMaterialType">1.1 Tipo de Material Predominante *</label>
+          <select id="beachMaterialType" name="beachMaterialType" required>
+            <option value="">-- Selecciona el tipo --</option>
+            <option value="Arena fina">Arena fina</option>
+            <option value="Arena gruesa">Arena gruesa</option>
+            <option value="Piedra">Piedra</option>
+            <option value="Grava">Grava</option>
+            <option value="Coral">Coral</option>
+            <option value="Roca">Roca</option>
+            <option value="Mezcla de materiales">Mezcla de materiales</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="slopeType">1.4 Pendiente de la Playa</label>
+          <select id="slopeType" name="slopeType">
+            <option value="">-- Selecciona la inclinación --</option>
+            <option value="Muy plana">Muy plana</option>
+            <option value="Plana">Plana</option>
+            <option value="Moderada">Moderada</option>
+            <option value="Pronunciada">Pronunciada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="approxLengthKm">1.2 Longitud Aprox. (km)</label>
+          <input type="number" step="0.1" id="approxLengthKm" name="approxLengthKm" placeholder="Ej: 12.5" />
+        </div>
+
+        <div class="form-group">
+          <label for="approxWidthMeters">Ancho de Playa (metros)</label>
+          <input type="number" id="approxWidthMeters" name="approxWidthMeters" placeholder="Ej: 45" />
+        </div>
+
+        <div class="form-group">
+          <label for="tideDistanceMeters">Distancia Marea Alta - Marea Baja (m)</label>
+          <input type="number" id="tideDistanceMeters" name="tideDistanceMeters" placeholder="Ej: 20" />
+        </div>
+
+        <div class="form-group">
+          <label for="elevationGpsMeters">1.3 Altura sobre el mar GPS (m)</label>
+          <input type="number" id="elevationGpsMeters" name="elevationGpsMeters" placeholder="Ej: 3" />
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- 2. DINÁMICA COSTERA Y OLEAJE -->
+    <fieldset class="form-section">
+      <legend>2. Dinámica Costera, Mareas y Oleaje</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tideState">2.5 Estado de la Marea *</label>
+          <select id="tideState" name="tideState" required>
+            <option value="">-- Selecciona el estado --</option>
+            <option value="Alta">Marea Alta</option>
+            <option value="Media">Marea Media</option>
+            <option value="Baja">Marea Baja</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="waveHeightMeters">2.4 Altura Aprox. de Olas (m)</label>
+          <input type="number" step="0.1" id="waveHeightMeters" name="waveHeightMeters" placeholder="Ej: 1.2" />
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="patroller">Nombre del Patrullero / Guardia *</label>
-        <input type="text" id="patroller" name="patroller" required placeholder="Ej: Pedro Córdoba" />
+        <label>2.1 Evidencias de Erosión Costera Observadas *</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-item"><input type="checkbox" name="erosionEvidence" value="Pérdida de arena" /> Pérdida evidente de arena</label>
+          <label class="checkbox-item"><input type="checkbox" name="erosionEvidence" value="Caída de árboles" /> Caída de árboles / palmeras</label>
+          <label class="checkbox-item"><input type="checkbox" name="erosionEvidence" value="Retroceso de la línea costera" /> Retroceso de la línea costera</label>
+          <label class="checkbox-item"><input type="checkbox" name="erosionEvidence" value="Exposición de raíces" /> Exposición de raíces</label>
+          <label class="checkbox-item"><input type="checkbox" name="erosionEvidence" value="Derrumbes y escarpes" /> Derrumbes / Formación de escarpes</label>
+        </div>
       </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sedimentationObservation">2.2 Acumulación de Sedimentos / Barras de arena</label>
+          <input type="text" id="sedimentationObservation" name="sedimentationObservation" placeholder="¿Nuevos bancos o barras de arena observadas?" />
+        </div>
+
+        <div class="form-group">
+          <label for="seaCurrentsInfo">2.3 Corrientes Marinas & Oleaje (Sugerencias pescadores)</label>
+          <input type="text" id="seaCurrentsInfo" name="seaCurrentsInfo" placeholder="Dirección, intensidad y alertas para embarcaciones..." />
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- 3. CONDICIONES CLIMÁTICAS -->
+    <fieldset class="form-section">
+      <legend>3. Condiciones Climáticas</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="weatherCondition">Estado del Tiempo</label>
+          <select id="weatherCondition" name="weatherCondition">
+            <option value="">-- Selecciona --</option>
+            <option value="Soleado">Soleado</option>
+            <option value="Nublado">Nublado</option>
+            <option value="Lluvia ligera">Lluvia ligera</option>
+            <option value="Lluvia fuerte">Lluvia fuerte</option>
+            <option value="Tormenta">Tormenta</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="seaState">Estado del Mar</label>
+          <select id="seaState" name="seaState">
+            <option value="">-- Selecciona --</option>
+            <option value="Calmado">Calmado</option>
+            <option value="Rizado">Rizado</option>
+            <option value="Marejada">Marejada</option>
+            <option value="Muy agitado">Muy agitado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="temperatureCelsius">Temperatura Aprox. (°C)</label>
+          <input type="number" id="temperatureCelsius" name="temperatureCelsius" placeholder="Ej: 28" />
+        </div>
+
+        <div class="form-group">
+          <label for="windDirectionAndSpeed">Viento (Dirección y Velocidad)</label>
+          <input type="text" id="windDirectionAndSpeed" name="windDirectionAndSpeed" placeholder="Ej: Norte / Moderado" />
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- 4. ECOSISTEMAS, FAUNA Y SARGAZO -->
+    <fieldset class="form-section">
+      <legend>4. Ecosistemas, Fauna y Sargazo</legend>
+      <div class="form-group">
+        <label for="observedFauna">4.2 Fauna Observada (Tortugas, Aves, Mamíferos, Cangrejos) *</label>
+        <textarea id="observedFauna" name="observedFauna" rows="2" required placeholder="Detalla especies observadas, cantidad, rastros de tortugas marinas, nidos o avistamientos de aves..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sargassumPresenceLevel">4.3 Presencia de Sargazo / Algas</label>
+          <select id="sargassumPresenceLevel" name="sargassumPresenceLevel">
+            <option value="">-- Selecciona el nivel --</option>
+            <option value="Bajo">Bajo (Línea dispersa)</option>
+            <option value="Medio">Medio (Acumulación moderada)</option>
+            <option value="Alto">Alto (Mantas densas en orilla)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="vegetationType">4.1 Vegetación y Manglares</label>
+          <input type="text" id="vegetationType" name="vegetationType" placeholder="Ej: Manglar rojo, palmeras, vegetación rastrera de duna..." />
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- 5 Y 6. RECURSOS HÍDRICOS, CONTAMINACIÓN Y INFRAESTRUCTURA -->
+    <fieldset class="form-section">
+      <legend>5, 6 y 7. Recursos Hídricos, Contaminación e Infraestructura</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="riverMouthName">5.1 Desembocaduras (Ríos / Quebradas)</label>
+          <input type="text" id="riverMouthName" name="riverMouthName" placeholder="Nombre de la fuente hídrica, ancho y estado visual..." />
+        </div>
+
+        <div class="form-group">
+          <label for="wasteQuantityLevel">6. Nivel de Contaminación / Residuos *</label>
+          <select id="wasteQuantityLevel" name="wasteQuantityLevel" required>
+            <option value="">-- Selecciona el nivel --</option>
+            <option value="Bajo">Bajo (Playa limpia / Pocos residuos)</option>
+            <option value="Medio">Medio (Presencia puntual de plásticos/redes)</option>
+            <option value="Alto">Alto (Acumulación crítica de residuos)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>6. Tipos de Residuos Encontrados</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Plásticos y botellas" /> Plásticos / Botellas / Bolsas</label>
+          <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Redes de pesca" /> Redes de pesca / Agallas</label>
+          <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Vidrio y metal" /> Vidrio / Metal / Envasado</label>
+          <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Madera tratada y caucho" /> Madera tratada / Caucho</label>
+          <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Material orgánico excesivo" /> Material orgánico / Escombros</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="infrastructureObserved">7. Infraestructura (Faros, Muelles, Obras, Construcciones)</label>
+        <input type="text" id="infrastructureObserved" name="infrastructureObserved" placeholder="Estado de faros, viviendas cercanas, muelles o construcciones en duna..." />
+      </div>
+    </fieldset>
+
+    <!-- 8 Y 9. COMPONENTE SOCIAL, CONOCIMIENTO ANCESTRAL Y AMENAZAS -->
+    <fieldset class="form-section">
+      <legend>8 y 9. Aspectos Sociales, Saberes Ancestrales y Amenazas</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="economicActivitiesObserved">8. Actividades Comunitarias Observadas</label>
+          <input type="text" id="economicActivitiesObserved" name="economicActivitiesObserved" placeholder="Pesca artesanal, recolectores, turismo, faenas tradicionales..." />
+        </div>
+
+        <div class="form-group">
+          <label for="traditionalKnowledgeShared">8.1 Saberes Ancestrales / Relatos de Sabedores</label>
+          <input type="text" id="traditionalKnowledgeShared" name="traditionalKnowledgeShared" placeholder="Comportamiento del mar, cambios históricos, lugares sagrados..." />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>9. Amenazas Principales Identificadas *</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Erosión costera severa" /> Erosión costera severa</label>
+          <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Tala de manglar / vegetación" /> Tala de manglar o vegetación</label>
+          <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Turismo no controlado" /> Turismo no controlado / Luminarias</label>
+          <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Extracción ilegal de arena" /> Extracción de arena</label>
+          <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Inundaciones costeras" /> Inundaciones / Marejadas</label>
+          <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Contaminación por plásticos" /> Contaminación por plásticos</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="observationsNotes">Notas Adicionales y Recomendaciones para la Comunidad</label>
+        <textarea id="observationsNotes" name="observationsNotes" rows="3" placeholder="Recomendaciones para la Junta Directiva de COCOMANORTE y entidades responsables..."></textarea>
+      </div>
+    </fieldset>
+
+    <div class="form-submit-row">
+      <button type="submit" class="submit-btn">
+        📋 Enviar Informe de Monitoreo Integral
+      </button>
     </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="species">Especie de Tortuga *</label>
-        <select id="species" name="species" required>
-          <option value="Tortuga Caná (Dermochelys coriacea)">Tortuga Caná (Dermochelys coriacea)</option>
-          <option value="Tortuga Carey (Eretmochelys imbricata)">Tortuga Carey (Eretmochelys imbricata)</option>
-          <option value="Tortuga Cahuama (Caretta caretta)">Tortuga Cahuama (Caretta caretta)</option>
-          <option value="Tortuga Verde (Chelonia mydas)">Tortuga Verde (Chelonia mydas)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="eventType">Tipo de Evento *</label>
-        <select id="eventType" name="eventType" required>
-          <option value="Anidación Exitosa">Anidación Exitosa</option>
-          <option value="Liberación de Neonatos">Liberación de Neonatos</option>
-          <option value="Eclosión de Nido">Eclosión de Nido</option>
-          <option value="Avistamiento de Huella">Avistamiento de Huella</option>
-          <option value="Intento Fallido">Intento Fallido</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="eggCount">Número de Huevos (si aplica)</label>
-        <input type="number" id="eggCount" name="eggCount" min="0" placeholder="Ej: 90" />
-      </div>
-
-      <div class="form-group">
-        <label for="hatchlingCount">Neonatos Liberados (si aplica)</label>
-        <input type="number" id="hatchlingCount" name="hatchlingCount" min="0" placeholder="Ej: 85" />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="notes">Observaciones y Estado del Nido</label>
-      <textarea id="notes" name="notes" rows="3" placeholder="Ubicación exacta, marcado de estaca, condiciones del clima o amenazas observadas..."></textarea>
-    </div>
-
-    <button type="submit" class="submit-btn">
-      📌 Registrar Monitoreo
-    </button>
   </form>
 </div>
 
@@ -76,7 +300,7 @@ import { beachesData } from "../../data/beachMonitoring";
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("✅ Registro de monitoreo de playa enviado exitosamente al sistema de COCOMANORTE.");
+      alert("✅ ¡Informe de Monitoreo Integral enviado con éxito! Los datos han sido registrados en la base de datos comunitaria de COCOMANORTE.");
       (form as HTMLFormElement).reset();
     });
   }
@@ -87,32 +311,71 @@ import { beachesData } from "../../data/beachMonitoring";
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    padding: 2.25rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  .form-header {
+    margin-bottom: 2rem;
+  }
+
+  .badge-protocol {
+    display: inline-block;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--verde-territorio, #166534);
     margin-top: 0;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
   }
 
   .form-intro {
-    font-size: 0.95rem;
-    color: #6b7280;
-    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
   }
 
   .monitoring-form {
     display: flex;
     flex-direction: column;
+    gap: 2rem;
+  }
+
+  .form-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
     gap: 1.25rem;
+    margin: 0;
+  }
+
+  .form-section legend {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--verde-territorio, #166534);
+    background: #ffffff;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
   }
 
   .form-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.25rem;
   }
 
@@ -128,7 +391,10 @@ import { beachesData } from "../../data/beachMonitoring";
     color: #374151;
   }
 
-  .form-group input,
+  .form-group input[type="text"],
+  .form-group input[type="number"],
+  .form-group input[type="date"],
+  .form-group input[type="time"],
   .form-group select,
   .form-group textarea {
     width: 100%;
@@ -138,6 +404,7 @@ import { beachesData } from "../../data/beachMonitoring";
     font-size: 0.95rem;
     font-family: inherit;
     box-sizing: border-box;
+    background: #ffffff;
   }
 
   .form-group input:focus,
@@ -148,19 +415,50 @@ import { beachesData } from "../../data/beachMonitoring";
     box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
   }
 
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.6rem;
+    background: #ffffff;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+  }
+
+  .checkbox-item input {
+    accent-color: var(--verde-territorio, #166534);
+    width: 16px;
+    height: 16px;
+  }
+
+  .form-submit-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .submit-btn {
     background: var(--verde-territorio, #166534);
     color: white;
     font-weight: 700;
-    padding: 0.85rem 1.5rem;
+    padding: 1rem 2rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.2s ease;
+    font-size: 1.05rem;
+    transition: background 0.2s ease, transform 0.1s ease;
   }
 
   .submit-btn:hover {
     background: #14532d;
+    transform: translateY(-1px);
   }
 </style>

@@ -11,6 +11,63 @@ export interface Beach {
   patrolLeader: string;
 }
 
+export interface ComprehensiveMonitoringReport {
+  id: string;
+  // Metadata Básica (OBLIGATORIA)
+  date: string;
+  startTime: string;
+  endTime?: string;
+  beachName: string;
+  sectorName?: string;
+  observerName: string;
+  community: string;
+
+  // 1. Caracterización física
+  beachMaterialType: "Arena fina" | "Arena gruesa" | "Piedra" | "Grava" | "Coral" | "Roca" | "Mezcla de materiales";
+  approxLengthKm?: number;
+  approxWidthMeters?: number;
+  tideDistanceMeters?: number;
+  elevationGpsMeters?: number;
+  slopeType?: "Muy plana" | "Plana" | "Moderada" | "Pronunciada";
+
+  // 2. Dinámica costera
+  erosionEvidence?: string[]; // Pérdida de arena, Caída de árboles, Retroceso costero, Exposición de raíces, Escombros/Escarpes
+  sedimentationObservation?: string;
+  seaCurrentsInfo?: string;
+  waveHeightMeters?: number;
+  tideState: "Alta" | "Media" | "Baja";
+
+  // 3. Condiciones climáticas
+  temperatureCelsius?: number;
+  weatherCondition?: "Soleado" | "Nublado" | "Lluvia ligera" | "Lluvia fuerte" | "Tormenta";
+  windDirectionAndSpeed?: string;
+  seaState?: "Calmado" | "Rizado" | "Marejada" | "Muy agitado";
+
+  // 4. Ecosistemas y biodiversidad
+  vegetationType?: string[];
+  observedFauna?: string; // Aves, Reptiles, Tortugas, Cangrejos, Mamíferos
+  sargassumPresenceLevel?: "Bajo" | "Medio" | "Alto";
+
+  // 5. Recursos hídricos
+  riverMouthName?: string;
+  waterVisualQuality?: string;
+
+  // 6. Contaminación y Residuos
+  wasteTypesFound?: string[]; // Plásticos, Vidrio, Metal, Redes de pesca, Caucho, Material orgánico
+  wasteQuantityLevel?: "Bajo" | "Medio" | "Alto";
+
+  // 7. Infraestructura
+  infrastructureObserved?: string; // Faros, Muelles, Viviendas, Obras de protección
+
+  // 8. Caracterización social y cultural
+  economicActivitiesObserved?: string; // Pesca artesanal, Turismo, Agricultura
+  traditionalKnowledgeShared?: string;
+
+  // 9. Amenazas principales
+  identifiedThreats?: string[]; // Erosión, Inundaciones, Contaminación, Tala, Extracción de arena, Turismo no controlado
+  observationsNotes?: string;
+}
+
 export interface MonitoringLog {
   id: string;
   date: string;
