@@ -1,38 +1,38 @@
-# Versión base del proyecto — v1.0.0
+# Versión Base del Proyecto — v1.5.0
 
 ## Propósito
 
-Este documento describe qué contiene la versión base (`v1.0.0`) del sitio institucional de COCOMANORTE, al cierre de la Fase 2 del roadmap.
-
-No representa el producto final. Es la base estable sobre la cual se construyen las siguientes fases.
+Este documento describe el estado del portal institucional de COCOMANORTE al cierre del desarrollo de la **Fase 3 (Portal Institucional Sólido)** y **Fase 4 (Sistema de Monitoreo Integral de Playas del Chocó)**.
 
 ---
 
-## Estado general
+## Estado General
 
-- Sitio institucional funcional, sin sistema de monitoreo todavía.
-- Arquitectura de componentes, datos y estilos separada según `docs/arquitectura.md`.
-- Responsive implementado y revisado.
-- SEO básico implementado (meta description por página).
-
----
-
-## Páginas incluidas
-
-- `/` — Inicio (Hero, Pilares, Llamado a la acción).
-- `/quienes-somos` — Misión, visión y valores.
-- `/territorio` — Placeholder, contenido pendiente para Fase 3.
-- `/turismo` — Placeholder, contenido pendiente para Fase 3.
-- `/contacto` — Placeholder, canales oficiales pendientes de definir.
+- Sitio web institucional completamente funcional y pulido.
+- Sistema de monitoreo ambiental y de tortugas marinas integrado con formulario oficial según el Protocolo del Departamento del Chocó.
+- Menú de navegación móvil responsivo con botón hamburguesa accesible.
+- SEO optimizado con etiquetas Open Graph, Twitter Cards, favicons y canonical URLs.
+- Arquitectura desacoplada de componentes, datos y estilos.
 
 ---
 
-## Componentes incluidos
+## Páginas Incluidas
+
+- `/` — Inicio (Hero, Cifras de impacto, Pilares, Spotlight de Monitoreo, Previsualización de Territorio y Turismo, CTA).
+- `/quienes-somos` — Misión, Visión, Valores, Estructura de Gobierno Propio y Autoridades, Línea del tiempo de la historia del colectivo y Repositorio de Documentos Oficiales descargables.
+- `/territorio` — Caracterización de comunidades ancestrales, Ecosistemas prioritarios de conservación y Proyectos ambientales.
+- `/turismo` — Catálogo de experiencias ecológicas, Código de ética y decálogo del visitante, Instrucciones de reserva previa.
+- `/monitoreo` — Dashboard con métricas globales, Estado de playas en tiempo real, Bitácora de patrullajes recientes y Formulario Oficial de Registro del Protocolo del Chocó.
+- `/contacto` — Canales de atención directa (Email, WhatsApp, Dirección física en Acandí, Chocó), Horarios, Redes sociales y Formulario de contacto.
+
+---
+
+## Componentes Incluidos
 
 Layout
 
-- Header
-- Footer
+- Header (con menú hamburguesa móvil)
+- Footer (con columnas de branding, enlaces y contacto)
 
 UI
 
@@ -47,27 +47,46 @@ Home
 - Pillars
 - CallToAction
 
+Gobernanza
+
+- MemberCard
+- Timeline
+- DocumentCard
+
+Territorio
+
+- CommunityCard
+- EcosystemCard
+
+Turismo
+
+- ExperienceCard
+- EthicsCard
+
+Monitoreo
+
+- BeachStatusCard
+- MonitoringLogTable
+- MonitoringForm
+
 ---
 
-## Datos centralizados
+## Datos Centralizados (`src/data/`)
 
-- `site.ts` — información general del sitio.
-- `organization.ts` — información institucional.
-- `pillars.ts` — pilares institucionales.
-- `navigation.ts` — menú principal.
-- `social.ts` — redes y contacto (pendiente de completar con datos reales).
-
----
-
-## Pendiente conocido para fases posteriores
-
-- Contenido real de Territorio, Turismo y Contacto (Fase 3).
-- Redes sociales y datos de contacto reales en `social.ts`.
-- Sistema de noticias y comunicación (Fase 3).
-- Plataforma de monitoreo ambiental (Fase 4 en adelante).
+- `site.ts` — Información general del sitio.
+- `organization.ts` — Nombre, Misión, Visión y Valores.
+- `navigation.ts` — Enlaces del menú principal.
+- `social.ts` — Teléfonos, WhatsApp, Email, Dirección en Acandí y redes sociales.
+- `pillars.ts` — Pilares institucionales.
+- `governance.ts` — Junta Directiva y Comités de Trabajo.
+- `history.ts` — Hitos históricos del colectivo.
+- `documents.ts` — Documentos oficiales descargables.
+- `territory.ts` — Comunidades y Ecosistemas.
+- `tourism.ts` — Experiencias y Código de Ética.
+- `beachMonitoring.ts` — Playas, registros y tipos del Protocolo de Monitoreo del Chocó.
 
 ---
 
 ## Referencia
 
-Ver `docs/roadmap.md` para el detalle completo de fases.
+Ver `docs/roadmap.md` para el mapa completo de fases.

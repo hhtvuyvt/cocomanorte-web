@@ -3,53 +3,37 @@
 ## 2026-07-30
 
 ### Se eligió Astro
+Motivo: Excelente rendimiento, muy buen SEO y sitio mayormente estático.
 
-Motivo
-
-- Excelente rendimiento.
-- Muy buen SEO.
-- Sitio mayormente estático.
+### Se decidió usar CSS puro y Tailwind CSS v4
+Motivo: Mantenimiento limpio sin sobrecarga de runtime CSS.
 
 ---
 
-### Se decidió usar CSS puro
+## 2026-08-15
 
-Motivo
-
-- No depender inicialmente de frameworks.
-- Mejor comprensión del proyecto.
-- Posibilidad de migrar a Tailwind en el futuro.
-
----
-
-### Componentes reutilizables
-
-Motivo
-
-Reducir duplicación de código y facilitar el mantenimiento.
+### Desacoplamiento de Datos en `src/data/`
+Contexto: La información institucional, ambiental y turística cambia periódicamente.
+Decisión: Separar todos los contenidos en archivos TypeScript tipados (`governance.ts`, `territory.ts`, `tourism.ts`, `beachMonitoring.ts`, `social.ts`).
+Motivo: Permite actualizar texto y datos sin modificar la lógica interna de los componentes UI.
 
 ---
 
-### Documentación desde el inicio
+## 2026-08-20
 
-Motivo
-
-El proyecto tiene vocación de largo plazo y puede crecer con nuevos colaboradores.
+### Implementación del Protocolo de Monitoreo Integral del Chocó
+Contexto: Las comunidades requerían registrar tanto el desove de tortugas como las variables físicas, ecológicas y sociales de las playas según las exigencias del departamento del Chocó.
+Decisión:
+- Crear una interfaz completa `ComprehensiveMonitoringReport` en `beachMonitoring.ts`.
+- Diseñar un formulario estructurado por secciones en `MonitoringForm.astro`.
+- Marcar como obligatorios los datos esenciales (playa, monitor, fecha, material, erosión, fauna y nivel de residuos) y dejar opcionales los datos técnicos detallados para permitir reportes flexibles en campo.
+Motivo: Asegura la usabilidad en campo sin perder rigurosidad técnica.
 
 ---
 
-### Uso de `svh` para secciones tipo hero
+## 2026-08-22
 
-Contexto
-
-En una primera versión del hero se usó una altura fija con `min-height: 550px` y luego se probó una altura basada en viewport. El problema apareció cuando la sección dependía de `vh`, ya que en móviles el navegador puede mostrar barras dinámicas y el área visible real cambia con el desplazamiento.
-
-Decisión
-
-- Usar `min-height: 78svh` en el hero para que la sección se adapte a la altura visible real del navegador.
-- Mantener tipografías y padding fluidos con `clamp()`.
-- Evitar estilos globales sobre etiquetas `a` dentro de componentes cuando ya existe un botón reutilizable.
-
-Motivo
-
-`vh` mide la altura total del viewport y puede no reflejar la zona efectiva de contenido. `svh` mide la altura de la ventana pequeña visible, que es la que realmente percibe el usuario en móviles y tablets. Esto elimina saltos visuales, recortes y espacios innecesarios en el hero.
+### Menú Hambuguesa Móvil Accessible
+Contexto: La barra de navegación se colapsaba en pantallas pequeñas de móviles.
+Decisión: Implementar un botón toggle con script liviano en `Header.astro` y animación CSS limpia con atributos `aria-expanded` para accesibilidad.
+Motivo: Mejorar la experiencia de usuario móvil en el territorio sin requerir frameworks pesados.
