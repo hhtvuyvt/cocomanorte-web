@@ -3,9 +3,14 @@ import Layout from "../layouts/Layout.astro";
 import Section from "../components/ui/Section.astro";
 import BeachStatusCard from "../components/monitoring/BeachStatusCard.astro";
 import MonitoringLogTable from "../components/monitoring/MonitoringLogTable.astro";
+import WeatherTideForecast from "../components/monitoring/WeatherTideForecast.astro";
 import MonitoringForm from "../components/monitoring/MonitoringForm.astro";
 
-import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
+import {
+  beachesData,
+  monitoringLogsData,
+  beachForecastsData,
+} from "../data/beachMonitoring";
 ---
 
 <Layout
@@ -66,6 +71,11 @@ import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
     </p>
 
     <MonitoringLogTable logs={monitoringLogsData} />
+  </Section>
+
+  <!-- Módulo de Pronóstico Metereológico y Tabla de Mareas -->
+  <Section>
+    <WeatherTideForecast forecasts={beachForecastsData} />
   </Section>
 
   <!-- Formulario de Registro Oficial -->

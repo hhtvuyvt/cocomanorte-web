@@ -11,6 +11,27 @@ export interface Beach {
   patrolLeader: string;
 }
 
+export interface TideForecast {
+  time: string;
+  type: "Marea Alta (Pleamar)" | "Marea Baja (Bajamar)";
+  heightMeters: number;
+}
+
+export interface BeachForecast {
+  beachId: string;
+  beachName: string;
+  date: string;
+  feasibilityStatus: "Condiciones Favorables" | "Precaución - Marejada / Oleaje" | "No Recomendado - Alerta de Mal Tiempo";
+  feasibilityReason: string;
+  temperatureCelsius: number;
+  rainProbabilityPercent: number;
+  windSpeedKmH: number;
+  windDirection: string;
+  waveHeightMeters: number;
+  tides: TideForecast[];
+  recommendationForPatrollers: string;
+}
+
 export interface ComprehensiveMonitoringReport {
   id: string;
   // Metadata Básica (OBLIGATORIA)
@@ -31,7 +52,7 @@ export interface ComprehensiveMonitoringReport {
   slopeType?: "Muy plana" | "Plana" | "Moderada" | "Pronunciada";
 
   // 2. Dinámica costera
-  erosionEvidence?: string[]; // Pérdida de arena, Caída de árboles, Retroceso costero, Exposición de raíces, Escombros/Escarpes
+  erosionEvidence?: string[];
   sedimentationObservation?: string;
   seaCurrentsInfo?: string;
   waveHeightMeters?: number;
@@ -45,7 +66,7 @@ export interface ComprehensiveMonitoringReport {
 
   // 4. Ecosistemas y biodiversidad
   vegetationType?: string[];
-  observedFauna?: string; // Aves, Reptiles, Tortugas, Cangrejos, Mamíferos
+  observedFauna?: string;
   sargassumPresenceLevel?: "Bajo" | "Medio" | "Alto";
 
   // 5. Recursos hídricos
@@ -53,18 +74,18 @@ export interface ComprehensiveMonitoringReport {
   waterVisualQuality?: string;
 
   // 6. Contaminación y Residuos
-  wasteTypesFound?: string[]; // Plásticos, Vidrio, Metal, Redes de pesca, Caucho, Material orgánico
+  wasteTypesFound?: string[];
   wasteQuantityLevel?: "Bajo" | "Medio" | "Alto";
 
   // 7. Infraestructura
-  infrastructureObserved?: string; // Faros, Muelles, Viviendas, Obras de protección
+  infrastructureObserved?: string;
 
   // 8. Caracterización social y cultural
-  economicActivitiesObserved?: string; // Pesca artesanal, Turismo, Agricultura
+  economicActivitiesObserved?: string;
   traditionalKnowledgeShared?: string;
 
   // 9. Amenazas principales
-  identifiedThreats?: string[]; // Erosión, Inundaciones, Contaminación, Tala, Extracción de arena, Turismo no controlado
+  identifiedThreats?: string[];
   observationsNotes?: string;
 }
 
@@ -117,6 +138,67 @@ export const beachesData: Beach[] = [
     lastPatrol: "Hoy, 02:00 AM",
     threatLevel: "Bajo",
     patrolLeader: "Guardia Comunitaria San Francisco",
+  },
+];
+
+export const beachForecastsData: BeachForecast[] = [
+  {
+    beachId: "beach-01",
+    beachName: "Playa La Playona",
+    date: "Hoy (Proyección Jornada Nocturna)",
+    feasibilityStatus: "Condiciones Favorables",
+    feasibilityReason: "Ventana de marea baja en horario de patrullaje nocturno con mar moderado.",
+    temperatureCelsius: 27,
+    rainProbabilityPercent: 20,
+    windSpeedKmH: 12,
+    windDirection: "Norte - Noreste",
+    waveHeightMeters: 0.9,
+    tides: [
+      { time: "05:12 AM", type: "Marea Baja (Bajamar)", heightMeters: 0.3 },
+      { time: "11:45 AM", type: "Marea Alta (Pleamar)", heightMeters: 1.8 },
+      { time: "05:50 PM", type: "Marea Baja (Bajamar)", heightMeters: 0.2 },
+      { time: "11:58 PM", type: "Marea Alta (Pleamar)", heightMeters: 1.9 },
+    ],
+    recommendationForPatrollers:
+      "Apta para recorrido terrestre a pie entre 07:00 PM y 03:00 AM. Utilizar luz roja y llevar hidratación.",
+  },
+  {
+    beachId: "beach-02",
+    beachName: "Playa Acandí Seco",
+    date: "Hoy (Proyección Jornada Nocturna)",
+    feasibilityStatus: "Precaución - Marejada / Oleaje",
+    feasibilityReason: "Aumento progresivo del oleaje en sector norte hacia la medianoche.",
+    temperatureCelsius: 26,
+    rainProbabilityPercent: 45,
+    windSpeedKmH: 22,
+    windDirection: "Noreste",
+    waveHeightMeters: 1.6,
+    tides: [
+      { time: "05:30 AM", type: "Marea Baja (Bajamar)", heightMeters: 0.4 },
+      { time: "12:05 PM", type: "Marea Alta (Pleamar)", heightMeters: 1.9 },
+      { time: "06:15 PM", type: "Marea Baja (Bajamar)", heightMeters: 0.3 },
+    ],
+    recommendationForPatrollers:
+      "Realizar el recorrido preferiblemente en el primer turno (06:00 PM a 10:00 PM) antes del pico de pleamar nocturna.",
+  },
+  {
+    beachId: "beach-03",
+    beachName: "Playa San Francisco",
+    date: "Hoy (Proyección Jornada Nocturna)",
+    feasibilityStatus: "Condiciones Favorables",
+    feasibilityReason: "Estuario con corriente moderada y sin alertas meteorológicas.",
+    temperatureCelsius: 28,
+    rainProbabilityPercent: 15,
+    windSpeedKmH: 10,
+    windDirection: "Este",
+    waveHeightMeters: 0.8,
+    tides: [
+      { time: "05:00 AM", type: "Marea Baja (Bajamar)", heightMeters: 0.3 },
+      { time: "11:20 AM", type: "Marea Alta (Pleamar)", heightMeters: 1.7 },
+      { time: "05:30 PM", type: "Marea Baja (Bajamar)", heightMeters: 0.2 },
+    ],
+    recommendationForPatrollers:
+      "Condiciones óptimas tanto para patrullaje peatonal como para acceso en embarcación tradicional potrillo.",
   },
 ];
 
