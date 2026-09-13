@@ -4,6 +4,7 @@ import Section from "../components/ui/Section.astro";
 import BeachStatusCard from "../components/monitoring/BeachStatusCard.astro";
 import MonitoringLogTable from "../components/monitoring/MonitoringLogTable.astro";
 import WeatherTideForecast from "../components/monitoring/WeatherTideForecast.astro";
+import MonitoringHistoryViewer from "../components/monitoring/MonitoringHistoryViewer.astro";
 import MonitoringForm from "../components/monitoring/MonitoringForm.astro";
 
 import {
@@ -42,7 +43,7 @@ import {
           <span class="summary-label">Neonatos Liberados</span>
         </div>
         <div class="summary-box">
-          <span class="summary-num">3 Playas</span>
+          <span class="summary-num">6 Playas</span>
           <span class="summary-label">Sectores bajo Vigilancia</span>
         </div>
       </div>
@@ -71,6 +72,11 @@ import {
     </p>
 
     <MonitoringLogTable logs={monitoringLogsData} />
+  </Section>
+
+  <!-- Consulta de Informes Históricos -->
+  <Section>
+    <MonitoringHistoryViewer />
   </Section>
 
   <!-- Módulo de Pronóstico Metereológico y Tabla de Mareas -->

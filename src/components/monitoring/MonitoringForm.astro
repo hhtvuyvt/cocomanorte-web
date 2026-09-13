@@ -324,13 +324,15 @@ import { beachesData } from "../../data/beachMonitoring";
 </div>
 
 <script>
+  import { saveMonitoringReport } from "../../utils/monitoringStorage";
+
   const beachSelect = document.getElementById("beach") as HTMLSelectElement | null;
   const newBeachFields = document.getElementById("new-beach-fields");
   const customBeachName = document.getElementById("customBeachName") as HTMLInputElement | null;
   const latInput = document.getElementById("latitude") as HTMLInputElement | null;
   const lngInput = document.getElementById("longitude") as HTMLInputElement | null;
   const btnLocation = document.getElementById("btn-get-location");
-  const form = document.getElementById("monitoring-form");
+  const form = document.getElementById("monitoring-form") as HTMLFormElement | null;
 
   // Mostrar / ocultar campos de coordenadas para nueva playa
   if (beachSelect && newBeachFields && customBeachName && latInput && lngInput) {
@@ -371,12 +373,61 @@ import { beachesData } from "../../data/beachMonitoring";
     });
   }
 
+  // Guardado interactivo en localStorage y notificación de actualización
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("✅ ¡Informe de Monitoreo Integral enviado con éxito! Los datos han sido registrados en la base de datos comunitaria de COCOMANORTE.");
-      (form as HTMLFormElement).reset();
+
+      const formData = new FormData(form);
+      const isNewBeach = formData.get("beachName") === "NUEVA_PLAYA";
+
+      const reportData = {
+        beachName: isNewBeach ? (formData.get("customBeachName") as string) : (formData.get("beachName") as string),
+        isNewUnregisteredBeach: isNewBeach,
+        customBeachName: formData.get("customBeachName") as string,
+        latitude: formData.get("latitude") ? parseFloat(formData.get("latitude") as string) : undefined,
+        longitude: formData.get("longitude") ? parseFloat(formData.get("longitude") as string) : undefined,
+        community: formData.get("community") as string,
+        observerName: formData.get("observerName") as string,
+        date: formData.get("date") as string,
+        startTime: formData.get("startTime") as string,
+        endTime: formData.get("endTime") as string,
+        beachMaterialType: formData.get("beachMaterialType") as any,
+        slopeType: formData.get("slopeType") as any,
+        approxLengthKm: formData.get("approxLengthKm") ? parseFloat(formData.get("approxLengthKm") as string) : undefined,
+        approxWidthMeters: formData.get("approxWidthMeters") ? parseFloat(formData.get("approxWidthMeters") as string) : undefined,
+        tideDistanceMeters: formData.get("tideDistanceMeters") ? parseFloat(formData.get("tideDistanceMeters") as string) : undefined,
+        elevationGpsMeters: formData.get("elevationGpsMeters") ? parseFloat(formData.get("elevationGpsMeters") as string) : undefined,
+        tideState: formData.get("tideState") as any,
+        waveHeightMeters: formData.get("waveHeightMeters") ? parseFloat(formData.get("waveHeightMeters") as string) : undefined,
+        erosionEvidence: formData.getAll("erosionEvidence") as string[],
+        sedimentationObservation: formData.get("sedimentationObservation") as string,
+        seaCurrentsInfo: formData.get("seaCurrentsInfo") as string,
+        weatherCondition: formData.get("weatherCondition") as any,
+        seaState: formData.get("seaState") as any,
+        temperatureCelsius: formData.get("temperatureCelsius") ? parseFloat(formData.get("temperatureCelsius") as string) : undefined,
+        windDirectionAndSpeed: formData.get("windDirectionAndSpeed") as string,
+        observedFauna: formData.get("observedFauna") as string,
+        sargassumPresenceLevel: formData.get("sargassumPresenceLevel") as any,
+        vegetationType: formData.get("vegetationType") ? [(formData.get("vegetationType") as string)] : [],
+        riverMouthName: formData.get("riverMouthName") as string,
+        wasteQuantityLevel: formData.get("wasteQuantityLevel") as any,
+        wasteTypesFound: formData.getAll("wasteTypesFound") as string[],
+        infrastructureObserved: formData.get("infrastructureObserved") as string,
+        economicActivitiesObserved: formData.get("economicActivitiesObserved") as string,
+        traditionalKnowledgeShared: formData.get("traditionalKnowledgeShared") as string,
+        identifiedThreats: formData.getAll("identifiedThreats") as string[],
+        observationsNotes: formData.get("observationsNotes") as string,
+      };
+
+      const result = saveMonitoringReport(reportData);
+
+      alert(`✅ ¡Informe de Monitoreo enviado y guardado exitosamente!\n\nPlaya: ${result.beach.name}\nEstado actualizado en tiempo real.`);
+      form.reset();
       if (newBeachFields) newBeachFields.classList.add("hidden");
+
+      // Disparar evento global para actualizar tableros e historial
+      window.dispatchEvent(new CustomEvent("monitoringReportSaved", { detail: result }));
     });
   }
 </script>
