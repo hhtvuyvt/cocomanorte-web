@@ -4,17 +4,6 @@
 
 Construir el sitio web institucional de COCOMANORTE como plataforma oficial de información, comunicación y seguimiento de los procesos de la organización.
 
-El sitio tendrá como objetivos principales:
-
-- Presentar información institucional de COCOMANORTE.
-- Comunicar noticias, acciones, proyectos y actividades.
-- Presentar información sobre el territorio, cultura, conservación y turismo comunitario.
-- Servir como punto oficial de consulta sobre el estado y las acciones de COCOMANORTE.
-- Incorporar un sistema de monitoreo ambiental y comunitario en tiempo real.
-- Permitir el seguimiento de los arribos de tortugas marinas, especialmente tortuga carey y tortuga caná.
-- Registrar y visualizar el estado de las playas de anidación.
-- Aplicar el Protocolo Oficial de Monitoreo Integral de Playas del Departamento del Chocó.
-
 ---
 
 ## FASE 1 — Fundación (COMPLETADA)
@@ -39,7 +28,6 @@ El sitio tendrá como objetivos principales:
 ## FASE 3 — Sitio institucional (COMPLETADA)
 
 ### 3.1 Inicio
-- [x] Revisar y mejorar Hero.
 - [x] Banner de cifras e impacto del colectivo.
 - [x] Módulo destacado de monitoreo en tiempo real.
 - [x] Vista previa de Territorio y Turismo Comunitario.
@@ -73,22 +61,30 @@ El sitio tendrá como objetivos principales:
 - [x] Definir entidades en `beachMonitoring.ts` (`Beach`, `MonitoringLog`, `ComprehensiveMonitoringReport`).
 - [x] Dashboard con métricas globales (Nidos activos, neonatos liberados, sectores bajo vigilancia).
 - [x] Tarjetas de estado en tiempo real para cada playa (`BeachStatusCard.astro`).
+- [x] Previsión metereológica y tabla de mareas (`WeatherTideForecast.astro`).
+- [x] Repositorio de consulta de reportes históricos con sanitización anti-XSS (`MonitoringHistoryViewer.astro`).
 - [x] Tabla bitácora de patrullajes y avistamientos recientes (`MonitoringLogTable.astro`).
 
 ### 4.2 Protocolo Oficial del Departamento del Chocó (`MonitoringForm.astro`)
-- [x] **0. Información Básica**: Playa, comunidad, monitor, fecha y horarios.
-- [x] **1. Caracterización Física**: Tipo de material, pendiente, dimensiones y elevación.
-- [x] **2. Dinámica Costera**: Evidencias de erosión, acumulación de sedimentos, corrientes y mareas.
-- [x] **3. Condiciones Climáticas**: Tiempo, estado del mar, temperatura y viento.
-- [x] **4. Ecosistemas & Biodiversidad**: Fauna observada (tortugas, aves), presencia de sargazo y vegetación.
-- [x] **5, 6 & 7. Recursos Hídricos, Contaminación e Infraestructura**: Desembocaduras, tipos de residuos y construcciones.
-- [x] **8 & 9. Aspectos Sociales, Saberes Ancestrales y Amenazas**: Actividades tradicionales, relatos de sabedores y amenazas identificadas.
+- [x] Formulario completo con secciones 0 a 9 del Protocolo del Chocó.
+- [x] Registro de nuevas playas desconocidas con coordenadas GPS y geolocalización por navegador.
+- [x] Motor de cálculo de amenazas y actualización de estado en tiempo semi-real (`beachStatusAnalyzer.ts`).
 
 ---
 
-## FASE 5 — Próximos Pasos en Seguridad & Producción (FUTURO)
+## FASE 5 — Backend, Base de Datos & Testing (COMPLETADA)
 
-- [ ] Integración de Backend / Base de Datos Serverless (Supabase / PostgreSQL) para persistencia real de reportes.
-- [ ] Sistema de Autenticación para Guardias y Patrulleros acreditados.
+- [x] Esquema SQL de PostgreSQL para Supabase (`supabase/schema.sql`).
+- [x] Cliente REST de Supabase con sincronización en segundo plano (`src/lib/supabase.ts`).
+- [x] Endpoint API de Astro (`/api/monitoring.ts`) para procesar POSTs de monitoreo.
+- [x] Inyección de variables de entorno de Supabase en GitHub Actions (`.github/workflows/deploy.yml`).
+- [x] Helper de formateo de rutas relativas para GitHub Pages (`getRelativeUrl`).
+- [x] Suite de pruebas unitarias automatizadas con Vitest (`src/tests/`).
+
+---
+
+## FASE 6 — Próximos Pasos en Producción (FUTURO)
+
+- [ ] Sistema de Autenticación para Guardias y Patrulleros acreditados (Supabase Auth).
 - [ ] Protección contra Spam con Cloudflare Turnstile / Captcha en el formulario de monitoreo.
-- [ ] Configurar HTTP Security Headers en hosting de producción (HSTS, CSP, X-Frame-Options).
+- [ ] Mapa interactivo con visor de capas GIS (Leaflet.js) para delimitar las playas georreferenciadas.

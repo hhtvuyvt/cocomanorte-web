@@ -37,3 +37,23 @@ Motivo: Asegura la usabilidad en campo sin perder rigurosidad técnica.
 Contexto: La barra de navegación se colapsaba en pantallas pequeñas de móviles.
 Decisión: Implementar un botón toggle con script liviano en `Header.astro` y animación CSS limpia con atributos `aria-expanded` para accesibilidad.
 Motivo: Mejorar la experiencia de usuario móvil en el territorio sin requerir frameworks pesados.
+
+---
+
+## 2026-08-25
+
+### Sistema Híbrido de Persistencia (Supabase + localStorage)
+Contexto: En la zona rural del Chocó la conectividad a internet puede ser inestable o nula durante los patrullajes.
+Decisión:
+- Implementar un cliente REST de Supabase en `src/lib/supabase.ts` para enviar informes a PostgreSQL cuando exista conexión.
+- Mantener un fallback transparente en `localStorage` mediante `src/utils/monitoringStorage.ts`.
+Motivo: Garantiza que los patrulleros no pierdan datos registrados en campo y que el sistema se sincronice automáticamente cuando haya red.
+
+---
+
+## 2026-08-28
+
+### Integración de Suite de Pruebas Unitarias con Vitest
+Contexto: Los algoritmos de cálculo de estado de playas, niveles de amenaza y formateo de URLs relativas requerían validación automática para evitar regresiones.
+Decisión: Integrar Vitest como framework de testing unitario (`npm run test`) en `src/tests/`.
+Motivo: Asegura la calidad e integridad del código en el pipeline de desarrollo y despliegue continuo.

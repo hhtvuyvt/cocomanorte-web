@@ -65,6 +65,7 @@
 **Descripción:** Botón reutilizable para navegación y llamados a la acción.
 
 **Propiedades:** `href`, `variant` (`primary` | `secondary`).
+**Formateo:** Formatea dinámicamente el atributo `href` con `getRelativeUrl` para respetar el `BASE_URL` de Astro.
 
 **Utilizado en:** Hero, CallToAction, Turismo, Contacto y páginas institucionales.
 
@@ -168,9 +169,23 @@
 
 ### BeachStatusCard
 
-**Descripción:** Tarjeta de resumen en tiempo real del estado de cada playa de anidación (nidos activos, neonatos liberados, nivel de amenaza, último patrullaje).
+**Descripción:** Tarjeta de resumen en tiempo real del estado de cada playa de anidación (nidos activos, neonatos liberados, nivel de amenaza, último patrullaje). Incluye re-renderizado automático ante el evento `monitoringReportSaved`.
 
 **Propiedades:** `beach` (`Beach`).
+
+---
+
+### WeatherTideForecast
+
+**Descripción:** Módulo de previsión meteorológica, oleaje y tabla de mareas que muestra un indicador de seguridad y viabilidad para la jornada de patrullaje.
+
+**Propiedades:** `forecasts` (`BeachForecast[]`).
+
+---
+
+### MonitoringHistoryViewer
+
+**Descripción:** Repositorio interactivo para consultar, buscar y filtrar informes de monitoreo históricos por playa y palabras clave. Incluye sanitización HTML anti-XSS (`escapeHtml`).
 
 ---
 
@@ -184,20 +199,21 @@
 
 ### MonitoringForm
 
-**Descripción:** Formulario interactivo estructurado según el **Protocolo de Monitoreo Integral de Playas del Chocó** (Secciones 0 a 9: Caracterización física, dinámica costera, clima, fauna/sargazo, recursos hídricos, contaminación, infraestructura, aspectos sociales y amenazas).
+**Descripción:** Formulario interactivo estructurado según el **Protocolo de Monitoreo Integral de Playas del Chocó** (Secciones 0 a 9). Incluye opción de registro de nuevas playas con coordenadas GPS, geolocalización por navegador y envío asíncrono al backend `/api/monitoring` con respaldo en `localStorage`.
 
 ---
 
-## Archivos de Datos (`src/data/`)
+## Módulos de Utilidad y Backend (`src/utils/` & `src/lib/`)
 
-- **`site.ts`**: Título, eslogan y metadatos generales del sitio.
-- **`organization.ts`**: Nombre, misión, visión y valores de COCOMANORTE.
-- **`navigation.ts`**: Lista de enlaces para el menú principal.
-- **`social.ts`**: Canales de atención, email, teléfono, WhatsApp, dirección y enlaces a redes sociales.
-- **`pillars.ts`**: Pilares institucionales.
-- **`governance.ts`**: Estructura organizativa, representante legal y comités comunitarios.
-- **`history.ts`**: Hitos de la historia territorial (Ley 70/93, Titulación).
-- **`documents.ts`**: Documentos oficiales descargables.
-- **`territory.ts`**: Comunidades, ecosistemas y proyectos de conservación.
-- **`tourism.ts`**: Experiencias turísticas, código de ética y guía de reserva.
-- **`beachMonitoring.ts`**: Datos de playas, bitácora de patrullajes e interfaces del informe integral.
+- **`src/utils/url.ts` (`getRelativeUrl`)**: Formatea rutas internas respetando el `BASE_URL` de Astro (ej. `/cocomanorte-web/...` en GitHub Pages).
+- **`src/utils/beachStatusAnalyzer.ts` (`analyzeBeachStatusFromReport`)**: Evalúa los parámetros de un informe (amenazas, erosión, contaminación, fauna) para calcular el nivel de riesgo y nuevo estado de la playa.
+- **`src/utils/monitoringStorage.ts`**: Gestor de estado persistente en `localStorage` con respaldo en Supabase.
+- **`src/lib/supabase.ts`**: Cliente API REST para insertar informes y actualizar estados en las tablas `monitoring_reports` y `beaches` de Supabase.
+- **`src/pages/api/monitoring.ts`**: Endpoint API Astro para validar y procesar solicitudes POST de informes de monitoreo.
+
+---
+
+## Suite de Pruebas Unitarias (`src/tests/`)
+
+- **`src/tests/beachStatusAnalyzer.test.ts`**: Valida los cálculos de amenazas, deltas de nidos/neonatos y cambio a estado de alerta por marejada.
+- **`src/tests/url.test.ts`**: Verifica el formateo de URLs relativas y la preservación de enlaces externos, `mailto:`, `tel:` y anclas.
