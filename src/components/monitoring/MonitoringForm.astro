@@ -23,6 +23,7 @@ import { beachesData } from "../../data/beachMonitoring";
             {beachesData.map((b) => (
               <option value={b.name}>{b.name} ({b.zone})</option>
             ))}
+            <option value="NUEVA_PLAYA">➕ Registrar Nueva Playa Desconocida / No Listada</option>
           </select>
         </div>
 
@@ -30,6 +31,33 @@ import { beachesData } from "../../data/beachMonitoring";
           <label for="community">Comunidad / Consejo Local *</label>
           <input type="text" id="community" name="community" required placeholder="Ej: La Playona, Acandí Seco, San Francisco..." />
         </div>
+      </div>
+
+      <!-- SECCIÓN DINÁMICA: NUEVA PLAYA Y COORDENADAS GPS -->
+      <div id="new-beach-fields" class="new-beach-box hidden">
+        <div class="box-title">📍 Registro de Nueva Playa y Coordenadas GPS</div>
+        <p class="box-desc">Ingresa el nombre común y las coordenadas tomadas con GPS o celular para registrar la ubicación en la base de datos de COCOMANORTE.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customBeachName">Nombre de la Nueva Playa *</label>
+            <input type="text" id="customBeachName" name="customBeachName" placeholder="Ej: Playa Caleta Norte, Ensenada del Este..." />
+          </div>
+
+          <div class="form-group">
+            <label for="latitude">Latitud GPS (Grados Decimales) *</label>
+            <input type="number" step="0.000001" id="latitude" name="latitude" placeholder="Ej: 8.512345" />
+          </div>
+
+          <div class="form-group">
+            <label for="longitude">Longitud GPS (Grados Decimales) *</label>
+            <input type="number" step="0.000001" id="longitude" name="longitude" placeholder="Ej: -77.285432" />
+          </div>
+        </div>
+
+        <button type="button" id="btn-get-location" class="btn-location">
+          📍 Usar mi ubicación GPS actual en el navegador
+        </button>
       </div>
 
       <div class="form-row">
@@ -296,12 +324,110 @@ import { beachesData } from "../../data/beachMonitoring";
 </div>
 
 <script>
-  const form = document.getElementById("monitoring-form");
+  import { saveMonitoringReport } from "../../utils/monitoringStorage";
+
+  const beachSelect = document.getElementById("beach") as HTMLSelectElement | null;
+  const newBeachFields = document.getElementById("new-beach-fields");
+  const customBeachName = document.getElementById("customBeachName") as HTMLInputElement | null;
+  const latInput = document.getElementById("latitude") as HTMLInputElement | null;
+  const lngInput = document.getElementById("longitude") as HTMLInputElement | null;
+  const btnLocation = document.getElementById("btn-get-location");
+  const form = document.getElementById("monitoring-form") as HTMLFormElement | null;
+
+  // Mostrar / ocultar campos de coordenadas para nueva playa
+  if (beachSelect && newBeachFields && customBeachName && latInput && lngInput) {
+    beachSelect.addEventListener("change", () => {
+      if (beachSelect.value === "NUEVA_PLAYA") {
+        newBeachFields.classList.remove("hidden");
+        customBeachName.setAttribute("required", "true");
+        latInput.setAttribute("required", "true");
+        lngInput.setAttribute("required", "true");
+      } else {
+        newBeachFields.classList.add("hidden");
+        customBeachName.removeAttribute("required");
+        latInput.removeAttribute("required");
+        lngInput.removeAttribute("required");
+      }
+    });
+  }
+
+  // Geolocalización automática por navegador
+  if (btnLocation && latInput && lngInput) {
+    btnLocation.addEventListener("click", () => {
+      if ("geolocation" in navigator) {
+        btnLocation.textContent = "⏳ Obteniendo ubicación GPS...";
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            latInput.value = pos.coords.latitude.toFixed(6);
+            lngInput.value = pos.coords.longitude.toFixed(6);
+            btnLocation.textContent = "✅ Coordenadas GPS obtenidas correctamente";
+          },
+          (err) => {
+            alert("No se pudo obtener la ubicación GPS: " + err.message);
+            btnLocation.textContent = "📍 Usar mi ubicación GPS actual en el navegador";
+          }
+        );
+      } else {
+        alert("Tu navegador o dispositivo no soporta geolocalización GPS.");
+      }
+    });
+  }
+
+  // Guardado interactivo en localStorage y notificación de actualización
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("✅ ¡Informe de Monitoreo Integral enviado con éxito! Los datos han sido registrados en la base de datos comunitaria de COCOMANORTE.");
-      (form as HTMLFormElement).reset();
+
+      const formData = new FormData(form);
+      const isNewBeach = formData.get("beachName") === "NUEVA_PLAYA";
+
+      const reportData = {
+        beachName: isNewBeach ? (formData.get("customBeachName") as string) : (formData.get("beachName") as string),
+        isNewUnregisteredBeach: isNewBeach,
+        customBeachName: formData.get("customBeachName") as string,
+        latitude: formData.get("latitude") ? parseFloat(formData.get("latitude") as string) : undefined,
+        longitude: formData.get("longitude") ? parseFloat(formData.get("longitude") as string) : undefined,
+        community: formData.get("community") as string,
+        observerName: formData.get("observerName") as string,
+        date: formData.get("date") as string,
+        startTime: formData.get("startTime") as string,
+        endTime: formData.get("endTime") as string,
+        beachMaterialType: formData.get("beachMaterialType") as any,
+        slopeType: formData.get("slopeType") as any,
+        approxLengthKm: formData.get("approxLengthKm") ? parseFloat(formData.get("approxLengthKm") as string) : undefined,
+        approxWidthMeters: formData.get("approxWidthMeters") ? parseFloat(formData.get("approxWidthMeters") as string) : undefined,
+        tideDistanceMeters: formData.get("tideDistanceMeters") ? parseFloat(formData.get("tideDistanceMeters") as string) : undefined,
+        elevationGpsMeters: formData.get("elevationGpsMeters") ? parseFloat(formData.get("elevationGpsMeters") as string) : undefined,
+        tideState: formData.get("tideState") as any,
+        waveHeightMeters: formData.get("waveHeightMeters") ? parseFloat(formData.get("waveHeightMeters") as string) : undefined,
+        erosionEvidence: formData.getAll("erosionEvidence") as string[],
+        sedimentationObservation: formData.get("sedimentationObservation") as string,
+        seaCurrentsInfo: formData.get("seaCurrentsInfo") as string,
+        weatherCondition: formData.get("weatherCondition") as any,
+        seaState: formData.get("seaState") as any,
+        temperatureCelsius: formData.get("temperatureCelsius") ? parseFloat(formData.get("temperatureCelsius") as string) : undefined,
+        windDirectionAndSpeed: formData.get("windDirectionAndSpeed") as string,
+        observedFauna: formData.get("observedFauna") as string,
+        sargassumPresenceLevel: formData.get("sargassumPresenceLevel") as any,
+        vegetationType: formData.get("vegetationType") ? [(formData.get("vegetationType") as string)] : [],
+        riverMouthName: formData.get("riverMouthName") as string,
+        wasteQuantityLevel: formData.get("wasteQuantityLevel") as any,
+        wasteTypesFound: formData.getAll("wasteTypesFound") as string[],
+        infrastructureObserved: formData.get("infrastructureObserved") as string,
+        economicActivitiesObserved: formData.get("economicActivitiesObserved") as string,
+        traditionalKnowledgeShared: formData.get("traditionalKnowledgeShared") as string,
+        identifiedThreats: formData.getAll("identifiedThreats") as string[],
+        observationsNotes: formData.get("observationsNotes") as string,
+      };
+
+      const result = saveMonitoringReport(reportData);
+
+      alert(`✅ ¡Informe de Monitoreo enviado y guardado exitosamente!\n\nPlaya: ${result.beach.name}\nEstado actualizado en tiempo real.`);
+      form.reset();
+      if (newBeachFields) newBeachFields.classList.add("hidden");
+
+      // Disparar evento global para actualizar tableros e historial
+      window.dispatchEvent(new CustomEvent("monitoringReportSaved", { detail: result }));
     });
   }
 </script>
@@ -413,6 +539,50 @@ import { beachesData } from "../../data/beachMonitoring";
     outline: none;
     border-color: var(--verde-territorio, #166534);
     box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
+  }
+
+  /* Caja dinámica de nueva playa */
+  .new-beach-box {
+    background: #f0fdf4;
+    border: 2px dashed var(--verde-territorio, #166534);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .new-beach-box.hidden {
+    display: none;
+  }
+
+  .box-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--verde-territorio, #166534);
+  }
+
+  .box-desc {
+    font-size: 0.85rem;
+    color: #374151;
+    margin: -0.5rem 0 0.5rem;
+  }
+
+  .btn-location {
+    align-self: flex-start;
+    background: #ffffff;
+    border: 1px solid var(--verde-territorio, #166534);
+    color: var(--verde-territorio, #166534);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .btn-location:hover {
+    background: var(--verde-claro, #dcfce7);
   }
 
   .checkbox-grid {

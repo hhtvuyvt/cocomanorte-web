@@ -1,0 +1,332 @@
+---
+---
+
+<div class="history-container">
+  <div class="history-header">
+    <span class="badge-history">📜 Repositorio de Informes Enviados</span>
+    <h2>Consulta de Informes y Reportes Históricos</h2>
+    <p class="history-intro">
+      Filtra y revisa los informes completos enviados por la Guardia Comunitaria y los patrulleros en cada sector del territorio.
+    </p>
+  </div>
+
+  <!-- Filtros de Búsqueda -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label for="filter-beach">Filtrar por Playa</label>
+      <select id="filter-beach">
+        <option value="ALL">Todas las Playas</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filter-search">Buscar por Monitor o Palabra Clave</label>
+      <input type="text" id="filter-search" placeholder="Ej: Carlos Rivas, nido, plásticos..." />
+    </div>
+  </div>
+
+  <!-- Contenedor Dinámico de Tarjetas de Informe -->
+  <div id="reports-list" class="reports-grid">
+    <div class="loading-placeholder">Cargando informes históricos...</div>
+  </div>
+</div>
+
+<script>
+  import { getStoredReports } from "../../utils/monitoringStorage";
+  import type { ComprehensiveMonitoringReport } from "../../data/beachMonitoring";
+
+  const reportsList = document.getElementById("reports-list");
+  const filterBeach = document.getElementById("filter-beach") as HTMLSelectElement | null;
+  const filterSearch = document.getElementById("filter-search") as HTMLInputElement | null;
+
+  function renderReports() {
+    if (!reportsList) return;
+    const reports: ComprehensiveMonitoringReport[] = getStoredReports();
+
+    // Actualizar opciones del select de playas
+    if (filterBeach && filterBeach.options.length <= 1) {
+      const beaches = Array.from(new Set(reports.map((r) => r.beachName)));
+      beaches.forEach((b) => {
+        const opt = document.createElement("option");
+        opt.value = b;
+        opt.textContent = b;
+        filterBeach.appendChild(opt);
+      });
+    }
+
+    const selectedBeach = filterBeach ? filterBeach.value : "ALL";
+    const searchQuery = filterSearch ? filterSearch.value.toLowerCase().trim() : "";
+
+    const filtered = reports.filter((r) => {
+      const matchBeach = selectedBeach === "ALL" || r.beachName === selectedBeach;
+      const matchSearch =
+        !searchQuery ||
+        r.observerName.toLowerCase().includes(searchQuery) ||
+        r.beachName.toLowerCase().includes(searchQuery) ||
+        r.observedFauna.toLowerCase().includes(searchQuery) ||
+        (r.observationsNotes && r.observationsNotes.toLowerCase().includes(searchQuery));
+      return matchBeach && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+      reportsList.innerHTML = `<div class="empty-state">No se encontraron informes con los filtros seleccionados.</div>`;
+      return;
+    }
+
+    reportsList.innerHTML = filtered
+      .map(
+        (r) => `
+      <div class="report-card">
+        <div class="report-card-header">
+          <div class="report-meta">
+            <span class="report-beach">📍 ${r.beachName}</span>
+            <span class="report-date">📅 ${r.date} (${r.startTime} hs)</span>
+          </div>
+          <span class="report-id">ID: ${r.id}</span>
+        </div>
+
+        <div class="report-body">
+          <p class="observer-info"><strong>Monitor / Guardia:</strong> ${r.observerName} (${r.community})</p>
+
+          <div class="details-row">
+            <span><strong>Material:</strong> ${r.beachMaterialType}</span>
+            <span><strong>Marea:</strong> ${r.tideState}</span>
+            ${r.latitude && r.longitude ? `<span><strong>GPS:</strong> ${r.latitude}, ${r.longitude}</span>` : ""}
+          </div>
+
+          ${
+            r.observedFauna
+              ? `<div class="fauna-box">
+                  <strong>Fauna y Anidaciones:</strong>
+                  <p>${r.observedFauna}</p>
+                </div>`
+              : ""
+          }
+
+          ${
+            r.erosionEvidence && r.erosionEvidence.length > 0
+              ? `<div class="chips-row">
+                  <strong>Erosión:</strong> ${r.erosionEvidence.map((e) => `<span class="tag-chip">${e}</span>`).join("")}
+                </div>`
+              : ""
+          }
+
+          ${
+            r.identifiedThreats && r.identifiedThreats.length > 0
+              ? `<div class="chips-row">
+                  <strong>Threats / Amenazas:</strong> ${r.identifiedThreats.map((t) => `<span class="threat-chip">${t}</span>`).join("")}
+                </div>`
+              : ""
+          }
+
+          ${
+            r.observationsNotes
+              ? `<p class="notes-text"><strong>Notas:</strong> ${r.observationsNotes}</p>`
+              : ""
+          }
+        </div>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  // Inicialización y Listeners
+  renderReports();
+
+  if (filterBeach) filterBeach.addEventListener("change", renderReports);
+  if (filterSearch) filterSearch.addEventListener("input", renderReports);
+
+  // Escuchar eventos globales de nuevo reporte guardado
+  window.addEventListener("monitoringReportSaved", renderReports);
+</script>
+
+<style>
+  .history-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    margin-bottom: 2.5rem;
+  }
+
+  .badge-history {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: var(--verde-territorio, #166534);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .history-intro {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    background: #f9fafb;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1.75rem;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .filter-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: #ffffff;
+  }
+
+  .reports-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .empty-state,
+  .loading-placeholder {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.95rem;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+</style>
+
+<style is:global>
+  .report-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    border-left: 4px solid var(--verde-territorio, #166534);
+  }
+
+  .report-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .report-beach {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--verde-territorio, #166534);
+    margin-right: 0.75rem;
+  }
+
+  .report-date {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .report-id {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #9ca3af;
+    background: #f3f4f6;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .report-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .observer-info {
+    margin: 0;
+    color: #1f2937;
+  }
+
+  .details-row {
+    display: flex;
+    gap: 1.25rem;
+    color: #4b5563;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .fauna-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 0.75rem;
+    border-radius: 8px;
+    color: #166534;
+  }
+
+  .fauna-box p {
+    margin: 0.25rem 0 0;
+    line-height: 1.4;
+  }
+
+  .chips-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag-chip {
+    font-size: 0.75rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .threat-chip {
+    font-size: 0.75rem;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .notes-text {
+    margin: 0;
+    color: #4b5563;
+    font-style: italic;
+  }
+</style>
