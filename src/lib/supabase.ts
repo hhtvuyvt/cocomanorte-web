@@ -1,4 +1,4 @@
-import type { Beach, ComprehensiveMonitoringReport } from "../data/beachMonitoring";
+import type { ComprehensiveMonitoringReport, Beach } from "../data/beachMonitoring";
 
 // Metadatos de entorno para la conexión con Supabase
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
