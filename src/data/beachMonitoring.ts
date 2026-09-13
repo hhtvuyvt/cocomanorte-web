@@ -9,6 +9,10 @@ export interface Beach {
   lastPatrol: string;
   threatLevel: "Bajo" | "Medio" | "Alto";
   patrolLeader: string;
+  gpsCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface TideForecast {
@@ -39,6 +43,10 @@ export interface ComprehensiveMonitoringReport {
   startTime: string;
   endTime?: string;
   beachName: string;
+  isNewUnregisteredBeach?: boolean;
+  customBeachName?: string;
+  latitude?: number;
+  longitude?: number;
   sectorName?: string;
   observerName: string;
   community: string;
@@ -114,6 +122,7 @@ export const beachesData: Beach[] = [
     lastPatrol: "Hoy, 04:30 AM",
     threatLevel: "Bajo",
     patrolLeader: "Comité de Guardias de La Playona",
+    gpsCoordinates: { latitude: 8.512, longitude: -77.285 },
   },
   {
     id: "beach-02",
@@ -126,6 +135,7 @@ export const beachesData: Beach[] = [
     lastPatrol: "Ayer, 11:15 PM",
     threatLevel: "Medio",
     patrolLeader: "Comisión Ambiental Acandí",
+    gpsCoordinates: { latitude: 8.541, longitude: -77.271 },
   },
   {
     id: "beach-03",
@@ -138,6 +148,46 @@ export const beachesData: Beach[] = [
     lastPatrol: "Hoy, 02:00 AM",
     threatLevel: "Bajo",
     patrolLeader: "Guardia Comunitaria San Francisco",
+    gpsCoordinates: { latitude: 8.489, longitude: -77.298 },
+  },
+  {
+    id: "beach-04",
+    name: "Playa Trigana",
+    zone: "Sector Sur - Bahía de Trigana",
+    lengthKm: 4.5,
+    status: "Activa - Temporada de Anidación",
+    activeNests: 38,
+    releasedHatchlings: 920,
+    lastPatrol: "Ayer, 09:40 PM",
+    threatLevel: "Bajo",
+    patrolLeader: "Comité Ecológico Trigana",
+    gpsCoordinates: { latitude: 8.361, longitude: -77.142 },
+  },
+  {
+    id: "beach-05",
+    name: "Playa Capurganá / El Aguacate",
+    zone: "Sector Fronterizo Norte",
+    lengthKm: 3.8,
+    status: "Baja Actividad",
+    activeNests: 21,
+    releasedHatchlings: 410,
+    lastPatrol: "Hace 2 días",
+    threatLevel: "Medio",
+    patrolLeader: "Guardia Ambiental Capurganá",
+    gpsCoordinates: { latitude: 8.634, longitude: -77.348 },
+  },
+  {
+    id: "beach-06",
+    name: "Playa Sapzurro",
+    zone: "Sector Golfo de Urabá",
+    lengthKm: 2.5,
+    status: "Baja Actividad",
+    activeNests: 14,
+    releasedHatchlings: 280,
+    lastPatrol: "Hace 3 días",
+    threatLevel: "Bajo",
+    patrolLeader: "Grupo Local Sapzurro",
+    gpsCoordinates: { latitude: 8.658, longitude: -77.362 },
   },
 ];
 
