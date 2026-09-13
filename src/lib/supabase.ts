@@ -109,3 +109,67 @@ export async function updateBeachStatusInSupabase(beach: Beach): Promise<boolean
     return false;
   }
 }
+
+/**
+ * Obtiene los reportes directamente desde la base de datos de Supabase.
+ */
+export async function fetchReportsFromSupabase(): Promise<ComprehensiveMonitoringReport[] | null> {
+  if (!isSupabaseConfigured) return null;
+
+  try {
+    const response = await fetch(`${supabaseUrl}/rest/v1/monitoring_reports?select=*&order=created_at.desc`, {
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+      },
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    return data.map((item: any) => ({
+      id: item.id,
+      date: item.date,
+      startTime: item.start_time,
+      endTime: item.end_time,
+      beachName: item.beach_name,
+      isNewUnregisteredBeach: item.is_new_unregistered_beach,
+      customBeachName: item.custom_beach_name,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      sectorName: item.sector_name,
+      observerName: item.observer_name,
+      community: item.community,
+      beachMaterialType: item.beach_material_type,
+      approxLengthKm: item.approx_length_km,
+      approxWidthMeters: item.approx_width_meters,
+      tideDistanceMeters: item.tide_distance_meters,
+      elevationGpsMeters: item.elevation_gps_meters,
+      slopeType: item.slope_type,
+      erosionEvidence: item.erosion_evidence || [],
+      sedimentationObservation: item.sedimentation_observation,
+      seaCurrentsInfo: item.sea_currents_info,
+      waveHeightMeters: item.wave_height_meters,
+      tideState: item.tide_state,
+      temperatureCelsius: item.temperature_celsius,
+      weatherCondition: item.weather_condition,
+      windDirectionAndSpeed: item.wind_direction_and_speed,
+      seaState: item.sea_state,
+      vegetationType: item.vegetation_type || [],
+      observedFauna: item.observed_fauna,
+      sargassumPresenceLevel: item.sargassum_presence_level,
+      riverMouthName: item.river_mouth_name,
+      waterVisualQuality: item.water_visual_quality,
+      wasteTypesFound: item.waste_types_found || [],
+      wasteQuantityLevel: item.waste_quantity_level,
+      infrastructureObserved: item.infrastructure_observed,
+      economicActivitiesObserved: item.economic_activities_observed,
+      traditionalKnowledgeShared: item.traditional_knowledge_shared,
+      identifiedThreats: item.identified_threats || [],
+      observationsNotes: item.observations_notes,
+    }));
+  } catch (error) {
+    console.error("Error al consultar reportes de Supabase:", error);
+    return null;
+  }
+}

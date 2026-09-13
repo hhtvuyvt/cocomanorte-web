@@ -1,5 +1,7 @@
 import type { Beach, MonitoringLog, ComprehensiveMonitoringReport } from "../data/beachMonitoring";
 import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
+import { insertReportToSupabase, updateBeachStatusInSupabase, fetchReportsFromSupabase } from "../lib/supabase";
+import { analyzeBeachStatusFromReport } from "./beachStatusAnalyzer";
 
 const STORAGE_KEYS = {
   BEACHES: "cocomanorte_beaches_v1",
@@ -91,6 +93,17 @@ export function getStoredReports(): ComprehensiveMonitoringReport[] {
   }
 }
 
+export async function getLiveReports(): Promise<ComprehensiveMonitoringReport[]> {
+  const remoteReports = await fetchReportsFromSupabase();
+  if (remoteReports && remoteReports.length > 0) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(remoteReports));
+    }
+    return remoteReports;
+  }
+  return getStoredReports();
+}
+
 export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoringReport>): {
   report: ComprehensiveMonitoringReport;
   beach: Beach;
@@ -153,10 +166,13 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
   reports.unshift(newReport);
   localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(reports));
 
-  // Buscar o crear la playa asociada en el estado
+  // Buscar la playa asociada en el estado actual
   let beach = beaches.find(
     (b) => b.name.toLowerCase() === targetBeachName.toLowerCase()
   );
+
+  // Analizar automáticamente el estatus semi-real a partir de las variables del informe
+  const analysis = analyzeBeachStatusFromReport(beach, newReport);
 
   if (!beach) {
     beach = {
@@ -164,11 +180,11 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
       name: targetBeachName,
       zone: reportData.community ? `Sector ${reportData.community}` : "Sector Reciente",
       lengthKm: reportData.approxLengthKm || 3.0,
-      status: "Activa - Temporada de Anidación",
-      activeNests: 0,
-      releasedHatchlings: 0,
-      lastPatrol: `Hoy, ${reportData.startTime || "Reciente"}`,
-      threatLevel: reportData.identifiedThreats && reportData.identifiedThreats.length > 2 ? "Alto" : "Bajo",
+      status: analysis.updatedStatus,
+      activeNests: Math.max(0, analysis.activeNestsDelta),
+      releasedHatchlings: Math.max(0, analysis.releasedHatchlingsDelta),
+      lastPatrol: analysis.lastPatrolText,
+      threatLevel: analysis.updatedThreatLevel,
       patrolLeader: reportData.observerName || "Guardia Comunitaria",
       gpsCoordinates:
         reportData.latitude && reportData.longitude
@@ -177,12 +193,26 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     };
     beaches.push(beach);
   } else {
-    // Actualizar datos de la playa existente
-    beach.lastPatrol = `Hoy, ${reportData.startTime || "Reciente"}`;
+    // Actualizar dinámicamente los indicadores de la playa existente
+    beach.status = analysis.updatedStatus;
+    beach.threatLevel = analysis.updatedThreatLevel;
+    beach.activeNests += analysis.activeNestsDelta;
+    beach.releasedHatchlings += analysis.releasedHatchlingsDelta;
+    beach.lastPatrol = analysis.lastPatrolText;
     if (reportData.observerName) {
       beach.patrolLeader = reportData.observerName;
     }
   }
+
+  // Guardar estado actualizado en localStorage
+  localStorage.setItem(STORAGE_KEYS.BEACHES, JSON.stringify(beaches));
+
+  // Intentar sincronizar en segundo plano con Supabase si las variables están configuradas
+  insertReportToSupabase(newReport)
+    .then(() => updateBeachStatusInSupabase(beach))
+    .catch((err) => {
+      console.warn("No se pudo sincronizar con Supabase, usando respaldo local:", err);
+    });
 
   // Generar log para la bitácora si hay información de fauna/nidos
   let newLog: MonitoringLog | undefined;
@@ -191,10 +221,8 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     let eventType: MonitoringLog["eventType"] = "Avistamiento de Huella";
     if (textLower.includes("nido") || textLower.includes("anida") || textLower.includes("huevo")) {
       eventType = "Anidación Exitosa";
-      beach.activeNests += 1;
     } else if (textLower.includes("eclos") || textLower.includes("liber") || textLower.includes("neonato")) {
       eventType = "Liberación de Neonatos";
-      beach.releasedHatchlings += 50;
     }
 
     newLog = {
@@ -211,8 +239,6 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     logs.unshift(newLog);
     localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(logs));
   }
-
-  localStorage.setItem(STORAGE_KEYS.BEACHES, JSON.stringify(beaches));
 
   return { report: newReport, beach, log: newLog };
 }
