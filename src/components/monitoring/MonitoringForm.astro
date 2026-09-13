@@ -1,5 +1,6 @@
 ---
 import { beachesData } from "../../data/beachMonitoring";
+import { getRelativeUrl } from "../../utils/url";
 ---
 
 <div class="form-container">
@@ -11,7 +12,7 @@ import { beachesData } from "../../data/beachMonitoring";
     </p>
   </div>
 
-  <form id="monitoring-form" class="monitoring-form">
+  <form id="monitoring-form" class="monitoring-form" data-api-endpoint={getRelativeUrl("/api/monitoring")}>
     <!-- METADATA Y DATOS BÁSICOS -->
     <fieldset class="form-section">
       <legend>0. Información Básica de la Jornada</legend>
@@ -316,7 +317,7 @@ import { beachesData } from "../../data/beachMonitoring";
     </fieldset>
 
     <div class="form-submit-row">
-      <button type="submit" class="submit-btn">
+      <button type="submit" id="submit-btn" class="submit-btn">
         📋 Enviar Informe de Monitoreo Integral
       </button>
     </div>
@@ -333,6 +334,7 @@ import { beachesData } from "../../data/beachMonitoring";
   const lngInput = document.getElementById("longitude") as HTMLInputElement | null;
   const btnLocation = document.getElementById("btn-get-location");
   const form = document.getElementById("monitoring-form") as HTMLFormElement | null;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement | null;
 
   // Mostrar / ocultar campos de coordenadas para nueva playa
   if (beachSelect && newBeachFields && customBeachName && latInput && lngInput) {
@@ -373,10 +375,14 @@ import { beachesData } from "../../data/beachMonitoring";
     });
   }
 
-  // Guardado interactivo en localStorage y notificación de actualización
   if (form) {
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ Procesando informe y guardando...";
+      }
 
       const formData = new FormData(form);
       const isNewBeach = formData.get("beachName") === "NUEVA_PLAYA";
@@ -420,11 +426,36 @@ import { beachesData } from "../../data/beachMonitoring";
         observationsNotes: formData.get("observationsNotes") as string,
       };
 
+      // 1. Enviar al Backend API de Astro / Supabase si está disponible
+      const apiEndpoint = form.getAttribute("data-api-endpoint") || "/api/monitoring";
+      let syncedWithBackend = false;
+
+      try {
+        const response = await fetch(apiEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(reportData),
+        });
+
+        if (response.ok) {
+          syncedWithBackend = true;
+        }
+      } catch (err) {
+        console.warn("API de servidor no disponible o entorno estático, guardando localmente:", err);
+      }
+
+      // 2. Guardar en almacenamiento local y actualizar estado del navegador
       const result = saveMonitoringReport(reportData);
 
-      alert(`✅ ¡Informe de Monitoreo enviado y guardado exitosamente!\n\nPlaya: ${result.beach.name}\nEstado actualizado en tiempo real.`);
+      alert(`✅ ¡Informe de Monitoreo procesado y guardado!\n\nPlaya: ${result.beach.name}\nEstado actualizado en tiempo real.`);
+
       form.reset();
       if (newBeachFields) newBeachFields.classList.add("hidden");
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "📋 Enviar Informe de Monitoreo Integral";
+      }
 
       // Disparar evento global para actualizar tableros e historial
       window.dispatchEvent(new CustomEvent("monitoringReportSaved", { detail: result }));
