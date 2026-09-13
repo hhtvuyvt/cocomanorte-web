@@ -8,20 +8,20 @@ interface Props {
 const { beach } = Astro.props;
 ---
 
-<div class="beach-card">
+<div class="beach-card" data-beach-name={beach.name}>
   <div class="header">
-    <span class="status-indicator active">● {beach.status}</span>
+    <span class="status-indicator active">● <span class="status-text">{beach.status}</span></span>
     <h3 class="title">{beach.name}</h3>
     <span class="zone">📍 {beach.zone} ({beach.lengthKm} km)</span>
   </div>
 
   <div class="stats-grid">
     <div class="stat-box">
-      <span class="value">{beach.activeNests}</span>
+      <span class="value nests-value">{beach.activeNests}</span>
       <span class="label">Nidos Activos</span>
     </div>
     <div class="stat-box">
-      <span class="value">{beach.releasedHatchlings.toLocaleString()}</span>
+      <span class="value hatchlings-value">{beach.releasedHatchlings.toLocaleString()}</span>
       <span class="label">Neonatos Liberados</span>
     </div>
   </div>
@@ -29,14 +29,52 @@ const { beach } = Astro.props;
   <div class="footer-meta">
     <div class="meta-item">
       <span class="meta-label">Último patrullaje:</span>
-      <span class="meta-value">{beach.lastPatrol}</span>
+      <span class="meta-value patrol-value">{beach.lastPatrol}</span>
     </div>
     <div class="meta-item">
       <span class="meta-label">Responsable:</span>
-      <span class="meta-value">{beach.patrolLeader}</span>
+      <span class="meta-value leader-value">{beach.patrolLeader}</span>
     </div>
   </div>
 </div>
+
+<script>
+  import { getStoredBeaches } from "../../utils/monitoringStorage";
+
+  function updateBeachCards() {
+    const storedBeaches = getStoredBeaches();
+    const cardEls = document.querySelectorAll(".beach-card");
+
+    cardEls.forEach((card) => {
+      const beachName = card.getAttribute("data-beach-name");
+      if (!beachName) return;
+
+      const beach = storedBeaches.find(
+        (b) => b.name.toLowerCase() === beachName.toLowerCase()
+      );
+
+      if (beach) {
+        const statusEl = card.querySelector(".status-text");
+        const nestsEl = card.querySelector(".nests-value");
+        const hatchlingsEl = card.querySelector(".hatchlings-value");
+        const patrolEl = card.querySelector(".patrol-value");
+        const leaderEl = card.querySelector(".leader-value");
+
+        if (statusEl) statusEl.textContent = beach.status;
+        if (nestsEl) nestsEl.textContent = beach.activeNests.toString();
+        if (hatchlingsEl) hatchlingsEl.textContent = beach.releasedHatchlings.toLocaleString();
+        if (patrolEl) patrolEl.textContent = beach.lastPatrol;
+        if (leaderEl) leaderEl.textContent = beach.patrolLeader;
+      }
+    });
+  }
+
+  // Cargar estado inicial almacenado
+  updateBeachCards();
+
+  // Escuchar eventos globales de nuevo reporte guardado para re-renderizar en tiempo semi-real
+  window.addEventListener("monitoringReportSaved", updateBeachCards);
+</script>
 
 <style>
   .beach-card {

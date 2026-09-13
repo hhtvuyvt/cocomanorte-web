@@ -1,4 +1,4 @@
-import type { ComprehensiveMonitoringReport, Beach } from "../data/beachMonitoring";
+import type { Beach, ComprehensiveMonitoringReport } from "../data/beachMonitoring";
 
 // Metadatos de entorno para la conexión con Supabase
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -74,6 +74,38 @@ export async function insertReportToSupabase(report: ComprehensiveMonitoringRepo
     return response.ok;
   } catch (error) {
     console.error("Error al enviar reporte a Supabase:", error);
+    return false;
+  }
+}
+
+/**
+ * Actualiza o inserta el estado de una playa en la tabla `beaches` de Supabase.
+ */
+export async function updateBeachStatusInSupabase(beach: Beach): Promise<boolean> {
+  if (!isSupabaseConfigured) return false;
+
+  try {
+    const response = await fetch(`${supabaseUrl}/rest/v1/beaches?name=eq.${encodeURIComponent(beach.name)}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        status: beach.status,
+        threat_level: beach.threatLevel,
+        active_nests: beach.activeNests,
+        released_hatchlings: beach.releasedHatchlings,
+        last_patrol: beach.lastPatrol,
+        patrol_leader: beach.patrolLeader,
+      }),
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error("Error al actualizar estado de la playa en Supabase:", error);
     return false;
   }
 }
