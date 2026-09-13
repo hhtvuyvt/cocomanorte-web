@@ -1,5 +1,6 @@
 import type { Beach, MonitoringLog, ComprehensiveMonitoringReport } from "../data/beachMonitoring";
 import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
+import { insertReportToSupabase } from "../lib/supabase";
 
 const STORAGE_KEYS = {
   BEACHES: "cocomanorte_beaches_v1",
@@ -152,6 +153,11 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
 
   reports.unshift(newReport);
   localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(reports));
+
+  // Intentar sincronizar en segundo plano con Supabase si las variables están configuradas
+  insertReportToSupabase(newReport).catch((err) => {
+    console.warn("No se pudo sincronizar con Supabase, usando respaldo local:", err);
+  });
 
   // Buscar o crear la playa asociada en el estado
   let beach = beaches.find(

@@ -39,6 +39,16 @@
   const filterBeach = document.getElementById("filter-beach") as HTMLSelectElement | null;
   const filterSearch = document.getElementById("filter-search") as HTMLInputElement | null;
 
+  function escapeHtml(str: string | number | undefined | null): string {
+    if (str === undefined || str === null) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function renderReports() {
     if (!reportsList) return;
     const reports: ComprehensiveMonitoringReport[] = getStoredReports();
@@ -79,26 +89,26 @@
       <div class="report-card">
         <div class="report-card-header">
           <div class="report-meta">
-            <span class="report-beach">📍 ${r.beachName}</span>
-            <span class="report-date">📅 ${r.date} (${r.startTime} hs)</span>
+            <span class="report-beach">📍 ${escapeHtml(r.beachName)}</span>
+            <span class="report-date">📅 ${escapeHtml(r.date)} (${escapeHtml(r.startTime)} hs)</span>
           </div>
-          <span class="report-id">ID: ${r.id}</span>
+          <span class="report-id">ID: ${escapeHtml(r.id)}</span>
         </div>
 
         <div class="report-body">
-          <p class="observer-info"><strong>Monitor / Guardia:</strong> ${r.observerName} (${r.community})</p>
+          <p class="observer-info"><strong>Monitor / Guardia:</strong> ${escapeHtml(r.observerName)} (${escapeHtml(r.community)})</p>
 
           <div class="details-row">
-            <span><strong>Material:</strong> ${r.beachMaterialType}</span>
-            <span><strong>Marea:</strong> ${r.tideState}</span>
-            ${r.latitude && r.longitude ? `<span><strong>GPS:</strong> ${r.latitude}, ${r.longitude}</span>` : ""}
+            <span><strong>Material:</strong> ${escapeHtml(r.beachMaterialType)}</span>
+            <span><strong>Marea:</strong> ${escapeHtml(r.tideState)}</span>
+            ${r.latitude && r.longitude ? `<span><strong>GPS:</strong> ${escapeHtml(r.latitude)}, ${escapeHtml(r.longitude)}</span>` : ""}
           </div>
 
           ${
             r.observedFauna
               ? `<div class="fauna-box">
                   <strong>Fauna y Anidaciones:</strong>
-                  <p>${r.observedFauna}</p>
+                  <p>${escapeHtml(r.observedFauna)}</p>
                 </div>`
               : ""
           }
@@ -106,7 +116,7 @@
           ${
             r.erosionEvidence && r.erosionEvidence.length > 0
               ? `<div class="chips-row">
-                  <strong>Erosión:</strong> ${r.erosionEvidence.map((e) => `<span class="tag-chip">${e}</span>`).join("")}
+                  <strong>Erosión:</strong> ${r.erosionEvidence.map((e) => `<span class="tag-chip">${escapeHtml(e)}</span>`).join("")}
                 </div>`
               : ""
           }
@@ -114,14 +124,14 @@
           ${
             r.identifiedThreats && r.identifiedThreats.length > 0
               ? `<div class="chips-row">
-                  <strong>Threats / Amenazas:</strong> ${r.identifiedThreats.map((t) => `<span class="threat-chip">${t}</span>`).join("")}
+                  <strong>Amenazas:</strong> ${r.identifiedThreats.map((t) => `<span class="threat-chip">${escapeHtml(t)}</span>`).join("")}
                 </div>`
               : ""
           }
 
           ${
             r.observationsNotes
-              ? `<p class="notes-text"><strong>Notas:</strong> ${r.observationsNotes}</p>`
+              ? `<p class="notes-text"><strong>Notas:</strong> ${escapeHtml(r.observationsNotes)}</p>`
               : ""
           }
         </div>
