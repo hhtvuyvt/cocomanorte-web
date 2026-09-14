@@ -2,7 +2,7 @@ name: Desplegar sitio en GitHub Pages
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
 # Otorga permisos requeridos a GitHub Actions para desplegar en Pages
 permissions:
@@ -32,8 +32,8 @@ jobs:
 
       - name: Compilar sitio estático Astro
         env:
-          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
-          PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run build
 
       - name: Cargar artefacto para GitHub Pages
