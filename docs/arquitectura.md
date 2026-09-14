@@ -16,11 +16,11 @@ El objetivo del proyecto es ofrecer una plataforma moderna para comunicar la ide
 
 ## Tecnologías
 
-- **Astro (v5 / v7)** — Framework principal optimizado para Generación de Sitios Estáticos (SSG) y API Endpoints (`/api/monitoring`).
-- **Supabase (PostgreSQL + REST API)** — Base de datos relacional para persistencia de reportes y estado de playas.
+- **Astro (v5 / v7)** — Framework principal optimizado para Generación de Sitios Estáticos (SSG) y rendimiento óptimo en GitHub Pages.
+- **Supabase (PostgreSQL + REST API + RLS)** — Base de datos relacional remota conectada directamente desde el cliente con políticas de Row Level Security (RLS) para persistencia sin servidores intermedios.
 - **Vitest** — Suite de pruebas unitarias para algoritmos de cálculo de amenazas, deltas de nidos y rutas base.
 - **Tailwind CSS v4 + CSS Modules** — Sistema de estilos responsive y variables institucionales.
-- **TypeScript** — Tipado estricto para modelos de datos, componentes y endpoints.
+- **TypeScript** — Tipado estricto para modelos de datos y componentes.
 - **GitHub Actions** — CI/CD para despliegue automatizado en GitHub Pages (`.github/workflows/deploy.yml`).
 
 ---
@@ -31,7 +31,7 @@ El proyecto busca:
 
 - Simplicidad y máximo rendimiento (Cero sobrecarga de JavaScript en producción).
 - Desacoplamiento total entre fuentes de datos, backend Supabase y componentes UI.
-- Resiliencia ante desconexiones mediante persistencia híbrida (`localStorage` + Supabase sync).
+- Resiliencia ante desconexiones mediante inserción directa con RLS y respaldo local en `localStorage`.
 - Alto nivel de accesibilidad, seguridad (XSS escaping) y SEO optimizado (Open Graph / Twitter Cards).
 - Cobertura de pruebas unitarias para algoritmos críticos.
 
@@ -54,8 +54,8 @@ El proyecto busca:
 │   │   ├── tourism/       # Experiencias y Código de Ética
 │   │   └── ui/            # Elementos base (Section, Button, Card)
 │   ├── data/              # Fuentes de datos TypeScript desacopladas
-│   ├── lib/               # Cliente API Supabase (`supabase.ts`)
-│   ├── pages/             # Rutas estáticas y API routes (`/api/monitoring.ts`)
+│   ├── lib/               # Cliente API Supabase REST con RLS (`supabase.ts`)
+│   ├── pages/             # Rutas estáticas del sitio web
 │   ├── tests/             # Pruebas unitarias de algoritmos (Vitest)
 │   ├── utils/             # Almacenamiento local, formateo de URL y analizador de estatus
 │   └── styles/            # CSS global y variables de tema
@@ -68,15 +68,13 @@ El proyecto busca:
 ## Flujo de Datos y Persistencia
 
 ```text
-Formulario de Monitoreo
-         ↓
-POST a /api/monitoring.ts (o guardado local en offline)
+Formulario de Monitoreo (MonitoringForm.astro)
          ↓
 Analizador de Estatus (src/utils/beachStatusAnalyzer.ts)
          ↓
-Sincronización Supabase PostgreSQL (src/lib/supabase.ts)
+Inserción Directa Cliente-Supabase RLS (src/lib/supabase.ts)
          ↓
-Persistencia Local (localStorage en src/utils/monitoringStorage.ts)
+Respaldo Local (localStorage en src/utils/monitoringStorage.ts)
          ↓
 Re-renderizado en Tiempo Semi-Real (BeachStatusCard & MonitoringHistoryViewer)
 ```
