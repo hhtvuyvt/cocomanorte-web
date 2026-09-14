@@ -1,6 +1,5 @@
 ---
 import { beachesData } from "../../data/beachMonitoring";
-import { getRelativeUrl } from "../../utils/url";
 ---
 
 <div class="form-container">
@@ -12,7 +11,7 @@ import { getRelativeUrl } from "../../utils/url";
     </p>
   </div>
 
-  <form id="monitoring-form" class="monitoring-form" data-api-endpoint={getRelativeUrl("/api/monitoring")}>
+  <form id="monitoring-form" class="monitoring-form">
     <!-- METADATA Y DATOS BÁSICOS -->
     <fieldset class="form-section">
       <legend>0. Información Básica de la Jornada</legend>
@@ -381,7 +380,7 @@ import { getRelativeUrl } from "../../utils/url";
 
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = "⏳ Procesando informe y guardando...";
+        submitBtn.textContent = "⏳ Procesando e insertando reporte...";
       }
 
       const formData = new FormData(form);
@@ -426,28 +425,10 @@ import { getRelativeUrl } from "../../utils/url";
         observationsNotes: formData.get("observationsNotes") as string,
       };
 
-      // 1. Enviar al Backend API de Astro / Supabase si está disponible
-      const apiEndpoint = form.getAttribute("data-api-endpoint") || "/api/monitoring";
-      let syncedWithBackend = false;
-
-      try {
-        const response = await fetch(apiEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(reportData),
-        });
-
-        if (response.ok) {
-          syncedWithBackend = true;
-        }
-      } catch (err) {
-        console.warn("API de servidor no disponible o entorno estático, guardando localmente:", err);
-      }
-
-      // 2. Guardar en almacenamiento local y actualizar estado del navegador
+      // Guardar informe directamente en el cliente (sincronizando con Supabase mediante RLS y guardando en localStorage)
       const result = saveMonitoringReport(reportData);
 
-      alert(`✅ ¡Informe de Monitoreo procesado y guardado!\n\nPlaya: ${result.beach.name}\nEstado actualizado en tiempo real.`);
+      alert(`✅ ¡Informe de Monitoreo procesado y enviado!\n\nPlaya: ${result.beach.name}\nEstado actualizado en Supabase y localmente.`);
 
       form.reset();
       if (newBeachFields) newBeachFields.classList.add("hidden");
@@ -457,7 +438,7 @@ import { getRelativeUrl } from "../../utils/url";
         submitBtn.textContent = "📋 Enviar Informe de Monitoreo Integral";
       }
 
-      // Disparar evento global para actualizar tableros e historial
+      // Disparar evento global para actualizar tableros e historial en vivo
       window.dispatchEvent(new CustomEvent("monitoringReportSaved", { detail: result }));
     });
   }

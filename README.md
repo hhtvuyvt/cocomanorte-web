@@ -26,7 +26,7 @@ Portal web oficial del **Consejo Comunitario Mayor COCOMANORTE**, diseñado para
   * Módulo de previsión meteorológica y tabla de mareas (`WeatherTideForecast`).
   * Repositorio de consulta de informes históricos con filtros y buscador (`MonitoringHistoryViewer`).
   * Bitácora pública de patrullajes y avistamiento de fauna (`MonitoringLogTable`).
-  * **Formulario Oficial de Registro con Geolocalización GPS** estructurado según el Protocolo del Departamento del Chocó (caracterización física, dinámica costera, clima, ecosistemas, recursos hídricos, contaminación, infraestructura, aspectos sociales y amenazas).
+  * **Formulario Oficial de Registro con Geolocalización GPS** e inserción directa a la base de datos de Supabase vía Row Level Security (RLS) y respaldo en `localStorage`.
 
 * **Atención y Contacto (`/contacto`)**:
   * Canales directos de atención (Email, WhatsApp, Dirección física en Acandí, Chocó).
@@ -37,8 +37,8 @@ Portal web oficial del **Consejo Comunitario Mayor COCOMANORTE**, diseñado para
 
 ## 🛠️ Stack Tecnológico
 
-* **Framework Frontend**: [Astro 5 / 7](https://astro.build/) (Static Site Generation / Renderizado estático ultrarrápido).
-* **Base de Datos & Backend**: [Supabase](https://supabase.com) (PostgreSQL / REST API) con sincronización en segundo plano y respaldo local en `localStorage`.
+* **Framework Frontend**: [Astro 5 / 7](https://astro.build/) (Static Site Generation para despliegue nativo en GitHub Pages).
+* **Base de Datos & Backend**: [Supabase](https://supabase.com) (PostgreSQL REST API con políticas de Row Level Security / RLS) y sincronización en segundo plano con `localStorage`.
 * **Pruebas Unitarias**: [Vitest](https://vitest.dev/) suite de tests unitarios para algoritmos de cálculo de amenazas y rutas base.
 * **Estilos & UI**: [Tailwind CSS v4](https://tailwindcss.com/) + CSS Modules con variables de diseño personalizadas.
 * **Lenguaje**: TypeScript / JavaScript.
@@ -70,15 +70,15 @@ Portal web oficial del **Consejo Comunitario Mayor COCOMANORTE**, diseñado para
 │   │   ├── governance/    # Componentes para Autoridades, Historia y Documentos
 │   │   ├── home/          # Secciones del Inicio (Hero, Pilares, Destacados, CTA)
 │   │   ├── layout/        # Header, Footer, Container
-│   │   ├── monitoring/    # Tarjetas de estado, Tablas, Clima/Mareas, Histórico y Formulario
+│   │   ├── monitoring/    # Tarjetas de estado, Clima/Mareas, Histórico y Formulario
 │   │   ├── territory/     # Tarjetas de Comunidades y Ecosistemas
 │   │   ├── tourism/       # Tarjetas de Experiencias y Código de Ética
 │   │   └── ui/            # Botones, Secciones y Cards base
 │   ├── data/              # Fuentes de datos desacopladas en TypeScript
 │   ├── lib/               # Cliente Supabase API REST (`supabase.ts`)
-│   ├── pages/             # Rutas estáticas y endpoints de la aplicación
+│   ├── pages/             # Rutas estáticas del sitio web
 │   ├── tests/             # Pruebas unitarias de algoritmos con Vitest
-│   ├── utils/             # Utilidades de almacenamiento local, cálculo de estado y rutas base
+│   ├── utils/             # Almacenamiento local, analizador de estatus y rutas relativas
 │   └── styles/            # Estilos globales y variables de tema
 ├── supabase/              # Esquema SQL oficial para Supabase (`schema.sql`)
 └── package.json

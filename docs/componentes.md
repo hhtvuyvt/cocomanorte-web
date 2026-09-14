@@ -199,7 +199,7 @@
 
 ### MonitoringForm
 
-**Descripción:** Formulario interactivo estructurado según el **Protocolo de Monitoreo Integral de Playas del Chocó** (Secciones 0 a 9). Incluye opción de registro de nuevas playas con coordenadas GPS, geolocalización por navegador y envío asíncrono al backend `/api/monitoring` con respaldo en `localStorage`.
+**Descripción:** Formulario interactivo estructurado según el **Protocolo de Monitoreo Integral de Playas del Chocó** (Secciones 0 a 9). Incluye opción de registro de nuevas playas con coordenadas GPS, geolocalización por navegador y envío directo al cliente Supabase REST API con políticas Row Level Security (RLS) y respaldo en `localStorage`.
 
 ---
 
@@ -208,8 +208,7 @@
 - **`src/utils/url.ts` (`getRelativeUrl`)**: Formatea rutas internas respetando el `BASE_URL` de Astro (ej. `/cocomanorte-web/...` en GitHub Pages).
 - **`src/utils/beachStatusAnalyzer.ts` (`analyzeBeachStatusFromReport`)**: Evalúa los parámetros de un informe (amenazas, erosión, contaminación, fauna) para calcular el nivel de riesgo y nuevo estado de la playa.
 - **`src/utils/monitoringStorage.ts`**: Gestor de estado persistente en `localStorage` con respaldo en Supabase.
-- **`src/lib/supabase.ts`**: Cliente API REST para insertar informes y actualizar estados en las tablas `monitoring_reports` y `beaches` de Supabase.
-- **`src/pages/api/monitoring.ts`**: Endpoint API Astro para validar y procesar solicitudes POST de informes de monitoreo.
+- **`src/lib/supabase.ts`**: Cliente API REST para insertar informes y actualizar estados en las tablas `monitoring_reports` y `beaches` de Supabase directamente desde el cliente vía RLS.
 
 ---
 
