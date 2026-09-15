@@ -219,12 +219,37 @@ import { beachesData } from "../../data/beachMonitoring";
       </div>
     </fieldset>
 
-    <!-- 4. ECOSISTEMAS, FAUNA Y SARGAZO -->
+    <!-- 4. ECOSISTEMAS, FAUNA, NIDOS Y NEONATOS -->
     <fieldset class="form-section">
-      <legend>4. Ecosistemas, Fauna y Sargazo</legend>
+      <legend>4. Ecosistemas, Fauna y Registro de Anidación</legend>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="eventType">Tipo de Evento Principal *</label>
+          <select id="eventType" name="eventType" required>
+            <option value="Sin Avistamiento">Sin Avistamiento Especial</option>
+            <option value="Anidación Exitosa">Anidación Exitosa / Nuevo Nido</option>
+            <option value="Liberación de Neonatos">Liberación de Neonatos</option>
+            <option value="Eclosión de Nido">Eclosión de Nido</option>
+            <option value="Avistamiento de Huella">Avistamiento de Huella</option>
+            <option value="Intento Fallido">Intento Fallido de Anidación</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="explicitActiveNestsCount">Nidos Nuevos Identificados (Cantidad) *</label>
+          <input type="number" min="0" id="explicitActiveNestsCount" name="explicitActiveNestsCount" value="0" required placeholder="Ej: 0, 1, 2..." />
+        </div>
+
+        <div class="form-group">
+          <label for="explicitReleasedHatchlingsCount">Neonatos Liberados (Cantidad) *</label>
+          <input type="number" min="0" id="explicitReleasedHatchlingsCount" name="explicitReleasedHatchlingsCount" value="0" required placeholder="Ej: 0, 85..." />
+        </div>
+      </div>
+
       <div class="form-group">
-        <label for="observedFauna">4.2 Fauna Observada (Tortugas, Aves, Mamíferos, Cangrejos) *</label>
-        <textarea id="observedFauna" name="observedFauna" rows="2" required placeholder="Detalla especies observadas, cantidad, rastros de tortugas marinas, nidos o avistamientos de aves..."></textarea>
+        <label for="observedFauna">4.2 Detalle de Fauna Observada (Tortugas, Aves, Mamíferos) *</label>
+        <textarea id="observedFauna" name="observedFauna" rows="2" required placeholder="Escribe 'Sin novedades' o detalla las especies observadas, cantidad, rastros o marcas de estacas..."></textarea>
       </div>
 
       <div class="form-row">
@@ -413,6 +438,9 @@ import { beachesData } from "../../data/beachMonitoring";
         temperatureCelsius: formData.get("temperatureCelsius") ? parseFloat(formData.get("temperatureCelsius") as string) : undefined,
         windDirectionAndSpeed: formData.get("windDirectionAndSpeed") as string,
         observedFauna: formData.get("observedFauna") as string,
+        eventType: formData.get("eventType") as any,
+        explicitActiveNestsCount: formData.get("explicitActiveNestsCount") ? parseInt(formData.get("explicitActiveNestsCount") as string, 10) : 0,
+        explicitReleasedHatchlingsCount: formData.get("explicitReleasedHatchlingsCount") ? parseInt(formData.get("explicitReleasedHatchlingsCount") as string, 10) : 0,
         sargassumPresenceLevel: formData.get("sargassumPresenceLevel") as any,
         vegetationType: formData.get("vegetationType") ? [(formData.get("vegetationType") as string)] : [],
         riverMouthName: formData.get("riverMouthName") as string,
@@ -428,7 +456,7 @@ import { beachesData } from "../../data/beachMonitoring";
       // Guardar informe directamente en el cliente (sincronizando con Supabase mediante RLS y guardando en localStorage)
       const result = saveMonitoringReport(reportData);
 
-      alert(`✅ ¡Informe de Monitoreo procesado y enviado!\n\nPlaya: ${result.beach.name}\nEstado actualizado en Supabase y localmente.`);
+      alert(`✅ ¡Informe de Monitoreo procesado y enviado!\n\nPlaya: ${result.beach.name}\nEstado actualizado con exactitud en Supabase y localmente.`);
 
       form.reset();
       if (newBeachFields) newBeachFields.classList.add("hidden");
