@@ -76,6 +76,9 @@ export interface ComprehensiveMonitoringReport {
   vegetationType?: string[];
   observedFauna?: string;
   sargassumPresenceLevel?: "Bajo" | "Medio" | "Alto";
+  explicitActiveNestsCount?: number;
+  explicitReleasedHatchlingsCount?: number;
+  eventType?: "Anidación Exitosa" | "Avistamiento de Huella" | "Liberación de Neonatos" | "Eclosión de Nido" | "Intento Fallido" | "Sin Avistamiento";
 
   // 5. Recursos hídricos
   riverMouthName?: string;
@@ -103,7 +106,7 @@ export interface MonitoringLog {
   time: string;
   beachName: string;
   turtleSpecies: "Tortuga Caná (Dermochelys coriacea)" | "Tortuga Carey (Eretmochelys imbricata)" | "Tortuga Cahuama (Caretta caretta)" | "Tortuga Verde (Chelonia mydas)";
-  eventType: "Anidación Exitosa" | "Avistamiento de Huella" | "Liberación de Neonatos" | "Eclosión de Nido" | "Intento Fallido";
+  eventType: "Anidación Exitosa" | "Avistamiento de Huella" | "Liberación de Neonatos" | "Eclosión de Nido" | "Intento Fallido" | "Sin Avistamiento";
   eggCount?: number;
   hatchlingCount?: number;
   patrollerName: string;
