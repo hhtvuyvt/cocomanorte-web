@@ -11,8 +11,8 @@ export interface BeachAnalysisResult {
 /**
  * Analiza un informe de monitoreo de playa recibido y calcula el nuevo estado,
  * nivel de amenaza, variación de nidos/neonatos y fecha de patrullaje utilizando
- * campos numéricos explícitos y eventos estructurados (evitando falsos positivos
- * por parsing de texto libre).
+ * campos numéricos explícitos y eventos estructurados (sin fallbacks heurísticos ni
+ * conteos adivinados).
  */
 export function analyzeBeachStatusFromReport(
   currentBeach: Beach | undefined,
@@ -43,27 +43,9 @@ export function analyzeBeachStatusFromReport(
     updatedStatus = "Baja Actividad";
   }
 
-  // 3. Calcular variación de Nidos Activos y Neonatos basándonos estrictamente en campos explícitos
-  let activeNestsDelta = 0;
-  let releasedHatchlingsDelta = 0;
-
-  if (typeof report.explicitActiveNestsCount === "number" && !isNaN(report.explicitActiveNestsCount)) {
-    activeNestsDelta = Math.max(0, report.explicitActiveNestsCount);
-  } else if (report.eventType === "Anidación Exitosa") {
-    activeNestsDelta = 1;
-  }
-
-  if (typeof report.explicitReleasedHatchlingsCount === "number" && !isNaN(report.explicitReleasedHatchlingsCount)) {
-    releasedHatchlingsDelta = Math.max(0, report.explicitReleasedHatchlingsCount);
-  } else if (report.eventType === "Liberación de Neonatos" || report.eventType === "Eclosión de Nido") {
-    releasedHatchlingsDelta = 50;
-  }
-
-  // Si el evento fue "Sin Avistamiento" o "Intento Fallido", los deltas son garantizados 0
-  if (report.eventType === "Sin Avistamiento" || report.eventType === "Intento Fallido") {
-    if (typeof report.explicitActiveNestsCount !== "number") activeNestsDelta = 0;
-    if (typeof report.explicitReleasedHatchlingsCount !== "number") releasedHatchlingsDelta = 0;
-  }
+  // 3. Calcular variación de Nidos Activos y Neonatos derivándolos estrictamente de los números explícitos
+  const activeNestsDelta = Math.max(0, Number(report.explicitActiveNestsCount) || 0);
+  const releasedHatchlingsDelta = Math.max(0, Number(report.explicitReleasedHatchlingsCount) || 0);
 
   // 4. Formatear Fecha / Hora del Último Patrullaje
   const reportTime = report.startTime || "Reciente";
