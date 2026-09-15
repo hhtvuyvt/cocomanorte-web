@@ -16,12 +16,12 @@ describe("analyzeBeachStatusFromReport", () => {
     patrolLeader: "Comité de Guardias",
   };
 
-  it("does NOT increment active nests or hatchlings when text says 'no se observaron nidos' and eventType is 'Sin Avistamiento'", () => {
+  it("reporte sin avistamiento no altera contadores", () => {
     const report = {
       date: "2025-04-01",
       startTime: "23:00",
       eventType: "Sin Avistamiento" as const,
-      observedFauna: "no se observaron nidos ni huellas de tortugas marinas en el patrullaje.",
+      observedFauna: "No se observaron nidos",
       explicitActiveNestsCount: 0,
       explicitReleasedHatchlingsCount: 0,
       wasteQuantityLevel: "Bajo" as const,
@@ -36,18 +36,32 @@ describe("analyzeBeachStatusFromReport", () => {
     expect(result.updatedStatus).toBe("Baja Actividad");
   });
 
-  it("increments active nests when eventType is 'Anidación Exitosa' or explicitActiveNestsCount is provided", () => {
+  it("usa la cantidad explícita aunque el evento sea liberación", () => {
     const report = {
-      date: "2025-04-01",
-      startTime: "23:00",
-      eventType: "Anidación Exitosa" as const,
-      explicitActiveNestsCount: 2,
-      observedFauna: "Se ubicaron y marcaron 2 nidos frescos de Caná.",
+      date: "2025-04-03",
+      startTime: "04:15",
+      eventType: "Liberación de Neonatos" as const,
+      explicitActiveNestsCount: 0,
+      explicitReleasedHatchlingsCount: 85,
+      observedFauna: "Eclosión de nido y liberación de 85 neonatos.",
     };
 
     const result = analyzeBeachStatusFromReport(sampleBeach, report);
 
-    expect(result.activeNestsDelta).toBe(2);
+    expect(result.activeNestsDelta).toBe(0);
+    expect(result.releasedHatchlingsDelta).toBe(85);
+  });
+
+  it("sin campos explícitos (reporte viejo/huérfano) aporta cero, nunca heurística", () => {
+    const report = {
+      date: "2025-04-01",
+      startTime: "23:00",
+      eventType: "Anidación Exitosa" as const,
+    };
+
+    const result = analyzeBeachStatusFromReport(sampleBeach, report);
+
+    expect(result.activeNestsDelta).toBe(0);
     expect(result.releasedHatchlingsDelta).toBe(0);
   });
 
@@ -64,19 +78,5 @@ describe("analyzeBeachStatusFromReport", () => {
 
     expect(result.updatedStatus).toBe("Alerta - Marejada");
     expect(result.updatedThreatLevel).toBe("Alto");
-  });
-
-  it("uses explicitReleasedHatchlingsCount accurately", () => {
-    const report = {
-      date: "2025-04-03",
-      startTime: "04:15",
-      eventType: "Liberación de Neonatos" as const,
-      explicitReleasedHatchlingsCount: 85,
-      observedFauna: "Eclosión de nido y liberación de 85 neonatos.",
-    };
-
-    const result = analyzeBeachStatusFromReport(sampleBeach, report);
-
-    expect(result.releasedHatchlingsDelta).toBe(85);
   });
 });

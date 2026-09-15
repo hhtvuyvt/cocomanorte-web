@@ -68,6 +68,9 @@ export async function insertReportToSupabase(report: ComprehensiveMonitoringRepo
         traditional_knowledge_shared: report.traditionalKnowledgeShared,
         identified_threats: report.identifiedThreats,
         observations_notes: report.observationsNotes,
+        event_type: report.eventType || "Sin Avistamiento",
+        explicit_active_nests_count: report.explicitActiveNestsCount ?? 0,
+        explicit_released_hatchlings_count: report.explicitReleasedHatchlingsCount ?? 0,
       }),
     });
 
@@ -167,6 +170,9 @@ export async function fetchReportsFromSupabase(): Promise<ComprehensiveMonitorin
       traditionalKnowledgeShared: item.traditional_knowledge_shared,
       identifiedThreats: item.identified_threats || [],
       observationsNotes: item.observations_notes,
+      eventType: item.event_type || "Sin Avistamiento",
+      explicitActiveNestsCount: item.explicit_active_nests_count ?? 0,
+      explicitReleasedHatchlingsCount: item.explicit_released_hatchlings_count ?? 0,
     }));
   } catch (error) {
     console.error("Error al consultar reportes de Supabase:", error);
