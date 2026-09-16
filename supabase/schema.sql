@@ -44,14 +44,16 @@ CREATE TABLE IF NOT EXISTS monitoring_reports (
   observations_notes TEXT,
   event_type TEXT NOT NULL DEFAULT 'Sin Avistamiento',
   explicit_active_nests_count INTEGER NOT NULL DEFAULT 0,
-  explicit_released_hatchlings_count INTEGER NOT NULL DEFAULT 0
+  explicit_released_hatchlings_count INTEGER NOT NULL DEFAULT 0,
+  user_id UUID REFERENCES auth.users(id) DEFAULT auth.uid()
 );
 
 -- Migración idempotente para instalaciones o tablas preexistentes
 ALTER TABLE monitoring_reports
   ADD COLUMN IF NOT EXISTS event_type TEXT NOT NULL DEFAULT 'Sin Avistamiento',
   ADD COLUMN IF NOT EXISTS explicit_active_nests_count INTEGER NOT NULL DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS explicit_released_hatchlings_count INTEGER NOT NULL DEFAULT 0;
+  ADD COLUMN IF NOT EXISTS explicit_released_hatchlings_count INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) DEFAULT auth.uid();
 
 -- Restricciones y validaciones a nivel DB para garantizar calidad de datos
 DO $$
@@ -92,10 +94,22 @@ CREATE TABLE IF NOT EXISTS beaches (
 ALTER TABLE monitoring_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE beaches ENABLE ROW LEVEL SECURITY;
 
+-- Eliminar políticas antiguas inseguras si existen
+DROP POLICY IF EXISTS "Inserción pública de reportes" ON monitoring_reports;
+DROP POLICY IF EXISTS "Actualización pública de playas" ON beaches;
+DROP POLICY IF EXISTS "Lectura pública de reportes" ON monitoring_reports;
+DROP POLICY IF EXISTS "Lectura pública de estado de playas" ON beaches;
+
 -- Políticas de lectura pública
 CREATE POLICY "Lectura pública de reportes" ON monitoring_reports FOR SELECT USING (true);
 CREATE POLICY "Lectura pública de estado de playas" ON beaches FOR SELECT USING (true);
 
--- Políticas de inserción/actualización
-CREATE POLICY "Inserción pública de reportes" ON monitoring_reports FOR INSERT WITH CHECK (true);
-CREATE POLICY "Actualización pública de playas" ON beaches FOR ALL USING (true);
+-- Política RLS estricta para Issue #2: Solo usuarios AUTENTICADOS pueden insertar reportes
+CREATE POLICY "Inserción sólo por patrulleros autenticados"
+  ON monitoring_reports
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() IS NOT NULL);
+
+-- La tabla beaches NO tiene política de INSERT/UPDATE pública ni autenticada para clientes REST.
+-- El estado de las playas es actualizado únicamente mediante Triggers de PostgreSQL en el servidor.
