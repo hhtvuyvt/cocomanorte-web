@@ -1,8 +1,8 @@
-import type { ComprehensiveMonitoringReport, Beach } from "../data/beachMonitoring";
+import { createClient } from "@supabase/supabase-js";
+import type { ComprehensiveMonitoringReport } from "../data/beachMonitoring";
 
-// Metadatos de entorno para la conexión con Supabase
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || "";
 
 export const isSupabaseConfigured = Boolean(
   supabaseUrl &&
@@ -11,25 +11,31 @@ export const isSupabaseConfigured = Boolean(
     !supabaseUrl.includes("tu-proyecto")
 );
 
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+export interface InsertReportResult {
+  success: boolean;
+  error?: string;
+}
+
 /**
- * Inserta un reporte de monitoreo en la tabla remota de Supabase si está configurada.
+ * Inserta un reporte de monitoreo en la tabla remota de Supabase usando el cliente oficial.
  */
-export async function insertReportToSupabase(report: ComprehensiveMonitoringReport): Promise<boolean> {
-  if (!isSupabaseConfigured) {
-    console.info("💡 Supabase no está configurado. El reporte se guardará en almacenamiento local.");
-    return false;
+export async function insertReportToSupabase(
+  report: ComprehensiveMonitoringReport
+): Promise<InsertReportResult> {
+  if (!isSupabaseConfigured || !supabase) {
+    return {
+      success: false,
+      error: "Supabase no está configurado en el entorno.",
+    };
   }
 
   try {
-    const response = await fetch(`${supabaseUrl}/rest/v1/monitoring_reports`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({
+    const { error } = await supabase.from("monitoring_reports").insert([
+      {
         date: report.date,
         start_time: report.startTime,
         end_time: report.endTime,
@@ -71,45 +77,21 @@ export async function insertReportToSupabase(report: ComprehensiveMonitoringRepo
         event_type: report.eventType || "Sin Avistamiento",
         explicit_active_nests_count: report.explicitActiveNestsCount ?? 0,
         explicit_released_hatchlings_count: report.explicitReleasedHatchlingsCount ?? 0,
-      }),
-    });
-
-    return response.ok;
-  } catch (error) {
-    console.error("Error al enviar reporte a Supabase:", error);
-    return false;
-  }
-}
-
-/**
- * Actualiza o inserta el estado de una playa en la tabla `beaches` de Supabase.
- */
-export async function updateBeachStatusInSupabase(beach: Beach): Promise<boolean> {
-  if (!isSupabaseConfigured) return false;
-
-  try {
-    const response = await fetch(`${supabaseUrl}/rest/v1/beaches?name=eq.${encodeURIComponent(beach.name)}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
-        Prefer: "return=minimal",
       },
-      body: JSON.stringify({
-        status: beach.status,
-        threat_level: beach.threatLevel,
-        active_nests: beach.activeNests,
-        released_hatchlings: beach.releasedHatchlings,
-        last_patrol: beach.lastPatrol,
-        patrol_leader: beach.patrolLeader,
-      }),
-    });
+    ]);
 
-    return response.ok;
-  } catch (error) {
-    console.error("Error al actualizar estado de la playa en Supabase:", error);
-    return false;
+    if (error) {
+      console.error("Error devuelto por Supabase al insertar reporte:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Excepción al enviar reporte a Supabase:", err);
+    return {
+      success: false,
+      error: err?.message || "Error desconocido al conectar con la base de datos.",
+    };
   }
 }
 
@@ -117,19 +99,16 @@ export async function updateBeachStatusInSupabase(beach: Beach): Promise<boolean
  * Obtiene los reportes directamente desde la base de datos de Supabase.
  */
 export async function fetchReportsFromSupabase(): Promise<ComprehensiveMonitoringReport[] | null> {
-  if (!isSupabaseConfigured) return null;
+  if (!isSupabaseConfigured || !supabase) return null;
 
   try {
-    const response = await fetch(`${supabaseUrl}/rest/v1/monitoring_reports?select=*&order=created_at.desc`, {
-      headers: {
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
-      },
-    });
+    const { data, error } = await supabase
+      .from("monitoring_reports")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    if (!response.ok) return null;
+    if (error || !data) return null;
 
-    const data = await response.json();
     return data.map((item: any) => ({
       id: item.id,
       date: item.date,

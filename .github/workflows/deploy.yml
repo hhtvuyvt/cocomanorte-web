@@ -30,10 +30,13 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Ejecutar Suite de Tests Unitarios
+        run: npm test
+
       - name: Compilar sitio estático Astro
         env:
-          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run build
 
       - name: Cargar artefacto para GitHub Pages

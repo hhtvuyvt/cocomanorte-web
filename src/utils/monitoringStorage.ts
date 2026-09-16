@@ -1,6 +1,6 @@
 import type { Beach, MonitoringLog, ComprehensiveMonitoringReport } from "../data/beachMonitoring";
 import { beachesData, monitoringLogsData } from "../data/beachMonitoring";
-import { insertReportToSupabase, updateBeachStatusInSupabase, fetchReportsFromSupabase } from "../lib/supabase";
+import { insertReportToSupabase, fetchReportsFromSupabase } from "../lib/supabase";
 import { analyzeBeachStatusFromReport } from "./beachStatusAnalyzer";
 
 const STORAGE_KEYS = {
@@ -29,6 +29,9 @@ const initialReports: ComprehensiveMonitoringReport[] = [
     wasteTypesFound: ["Plásticos y botellas"],
     identifiedThreats: ["Turismo no controlado"],
     observationsNotes: "Santuario en buen estado. Se instaló estaca protectora #LP-142.",
+    eventType: "Anidación Exitosa",
+    explicitActiveNestsCount: 1,
+    explicitReleasedHatchlingsCount: 0,
   },
   {
     id: "rep-002",
@@ -48,6 +51,9 @@ const initialReports: ComprehensiveMonitoringReport[] = [
     wasteTypesFound: ["Redes de pesca", "Plásticos y botellas"],
     identifiedThreats: ["Erosión costera severa"],
     observationsNotes: "Se recomienda limpieza comunitaria de redes en la zona norte.",
+    eventType: "Liberación de Neonatos",
+    explicitActiveNestsCount: 0,
+    explicitReleasedHatchlingsCount: 82,
   },
 ];
 
@@ -104,11 +110,17 @@ export async function getLiveReports(): Promise<ComprehensiveMonitoringReport[]>
   return getStoredReports();
 }
 
-export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoringReport>): {
+export interface SaveReportResult {
   report: ComprehensiveMonitoringReport;
   beach: Beach;
   log?: MonitoringLog;
-} {
+  insertSuccess: boolean;
+  errorDetails?: string;
+}
+
+export async function saveMonitoringReport(
+  reportData: Partial<ComprehensiveMonitoringReport>
+): Promise<SaveReportResult> {
   const reports = getStoredReports();
   const beaches = getStoredBeaches();
   const logs = getStoredLogs();
@@ -116,7 +128,6 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
   const reportId = `rep-${Date.now()}`;
   let targetBeachName = reportData.beachName || "Playa No Especificada";
 
-  // Si es una nueva playa registrada
   if (reportData.isNewUnregisteredBeach && reportData.customBeachName) {
     targetBeachName = reportData.customBeachName.trim();
   }
@@ -161,17 +172,41 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     traditionalKnowledgeShared: reportData.traditionalKnowledgeShared,
     identifiedThreats: reportData.identifiedThreats || [],
     observationsNotes: reportData.observationsNotes,
+    eventType: reportData.eventType || "Sin Avistamiento",
+    explicitActiveNestsCount: reportData.explicitActiveNestsCount ?? 0,
+    explicitReleasedHatchlingsCount: reportData.explicitReleasedHatchlingsCount ?? 0,
   };
 
+  // Tarea 3 & Criterio de Aceptación: Intentar insertar primeramente en Supabase
+  const dbResult = await insertReportToSupabase(newReport);
+
+  if (!dbResult.success) {
+    // Si la inserción a la BD falla, NO guardar en estado ni fingir éxito
+    let beachFail = beaches.find((b) => b.name.toLowerCase() === targetBeachName.toLowerCase()) || {
+      id: "beach-fail",
+      name: targetBeachName,
+      zone: "Sector Local",
+      status: "Activa - Temporada de Anidación" as const,
+      activeNests: 0,
+      releasedHatchlings: 0,
+      threatLevel: "Bajo" as const,
+    };
+    return {
+      report: newReport,
+      beach: beachFail,
+      insertSuccess: false,
+      errorDetails: dbResult.error,
+    };
+  }
+
+  // Si el insert en Supabase fue exitoso, persistir localmente para reflejar UI
   reports.unshift(newReport);
   localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(reports));
 
-  // Buscar la playa asociada en el estado actual
   let beach = beaches.find(
     (b) => b.name.toLowerCase() === targetBeachName.toLowerCase()
   );
 
-  // Analizar automáticamente el estatus semi-real a partir de las variables del informe
   const analysis = analyzeBeachStatusFromReport(beach, newReport);
 
   if (!beach) {
@@ -193,7 +228,6 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     };
     beaches.push(beach);
   } else {
-    // Actualizar dinámicamente los indicadores de la playa existente
     beach.status = analysis.updatedStatus;
     beach.threatLevel = analysis.updatedThreatLevel;
     beach.activeNests += analysis.activeNestsDelta;
@@ -204,34 +238,18 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     }
   }
 
-  // Guardar estado actualizado en localStorage
   localStorage.setItem(STORAGE_KEYS.BEACHES, JSON.stringify(beaches));
 
-  // Intentar sincronizar en segundo plano con Supabase si las variables están configuradas
-  insertReportToSupabase(newReport)
-    .then(() => updateBeachStatusInSupabase(beach))
-    .catch((err) => {
-      console.warn("No se pudo sincronizar con Supabase, usando respaldo local:", err);
-    });
-
-  // Generar log para la bitácora si hay información de fauna/nidos
+  // Tarea 4: Generar log para la bitácora usando estrictamente eventType (sin parsing de texto libre)
   let newLog: MonitoringLog | undefined;
-  if (reportData.observedFauna) {
-    const textLower = reportData.observedFauna.toLowerCase();
-    let eventType: MonitoringLog["eventType"] = "Avistamiento de Huella";
-    if (textLower.includes("nido") || textLower.includes("anida") || textLower.includes("huevo")) {
-      eventType = "Anidación Exitosa";
-    } else if (textLower.includes("eclos") || textLower.includes("liber") || textLower.includes("neonato")) {
-      eventType = "Liberación de Neonatos";
-    }
-
+  if (newReport.eventType && newReport.eventType !== "Sin Avistamiento") {
     newLog = {
       id: `log-${Date.now()}`,
       date: newReport.date,
       time: newReport.startTime,
       beachName: targetBeachName,
       turtleSpecies: "Tortuga Caná (Dermochelys coriacea)",
-      eventType,
+      eventType: newReport.eventType,
       patrollerName: newReport.observerName,
       notes: newReport.observedFauna,
     };
@@ -240,5 +258,10 @@ export function saveMonitoringReport(reportData: Partial<ComprehensiveMonitoring
     localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(logs));
   }
 
-  return { report: newReport, beach, log: newLog };
+  return {
+    report: newReport,
+    beach,
+    log: newLog,
+    insertSuccess: true,
+  };
 }
