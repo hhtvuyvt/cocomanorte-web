@@ -57,3 +57,15 @@ Motivo: Garantiza que los patrulleros no pierdan datos registrados en campo y qu
 Contexto: Los algoritmos de cálculo de estado de playas, niveles de amenaza y formateo de URLs relativas requerían validación automática para evitar regresiones.
 Decisión: Integrar Vitest como framework de testing unitario (`npm run test`) en `src/tests/`.
 Motivo: Asegura la calidad e integridad del código en el pipeline de desarrollo y despliegue continuo.
+
+---
+
+## 2026-08-30
+
+### Cierre de Issue #3: Transición Estricta a Campos Explícitos y Decisión de Datos Históricos
+Contexto: En versiones previas (pre-v1.6.0), el sistema intentaba deducir conteos mediante análisis de texto libre sobre descripciones de fauna (ej: buscar "nido"), generando conteos imprecisos o falsos positivos como +1 nido en oraciones de tipo "no se observaron nidos".
+Decisión:
+- **Estructuración de Datos**: Transición obligatoria a campos explícitos (`eventType`, `explicitActiveNestsCount`, `explicitReleasedHatchlingsCount`).
+- **Eliminación Total de Heurísticas**: Se eliminaron del analizador y de la interfaz todas las reglas de parseo de texto y números mágicos (como =50).
+- **Tratamiento de Datos Históricos (Aceptar el corte)**: Para garantizar honestidad científica y calidad de datos a nivel DB, se aceptó el corte explícito a partir del despliegue de v1.6.0. Los reportes anteriores a la migración quedan con `eventType: 'Sin Avistamiento'` y contadores en 0. De esta manera se evita contaminar las métricas de la base de datos con inferencias o suposiciones automáticas no verificables.
+Motivo: Garantiza la integridad científica del monitoreo de tortugas marinas en las playas del territorio de COCOMANORTE.
