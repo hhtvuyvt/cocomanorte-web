@@ -82,7 +82,7 @@
             <span class="report-beach">📍 ${r.beachName}</span>
             <span class="report-date">📅 ${r.date} (${r.startTime} hs)</span>
           </div>
-          <span class="report-id">ID: ${r.id}</span>
+          <span class="event-type-badge">${r.eventType || "Sin Avistamiento"}</span>
         </div>
 
         <div class="report-body">
@@ -91,13 +91,15 @@
           <div class="details-row">
             <span><strong>Material:</strong> ${r.beachMaterialType}</span>
             <span><strong>Marea:</strong> ${r.tideState}</span>
+            <span><strong>Nidos Registrados:</strong> 🪺 ${r.explicitActiveNestsCount ?? 0}</span>
+            <span><strong>Neonatos Liberados:</strong> 🐢 ${r.explicitReleasedHatchlingsCount ?? 0}</span>
             ${r.latitude && r.longitude ? `<span><strong>GPS:</strong> ${r.latitude}, ${r.longitude}</span>` : ""}
           </div>
 
           ${
             r.observedFauna
               ? `<div class="fauna-box">
-                  <strong>Fauna y Anidaciones:</strong>
+                  <strong>Fauna y Observaciones:</strong>
                   <p>${r.observedFauna}</p>
                 </div>`
               : ""
@@ -259,13 +261,13 @@
     font-weight: 500;
   }
 
-  .report-id {
-    font-size: 0.75rem;
+  .event-type-badge {
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #9ca3af;
-    background: #f3f4f6;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    color: #166534;
+    background: #dcfce7;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
   }
 
   .report-body {
