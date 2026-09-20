@@ -1,11 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Section from "../components/ui/Section.astro";
+import Button from "../components/ui/Button.astro";
 import BeachStatusCard from "../components/monitoring/BeachStatusCard.astro";
 import MonitoringLogTable from "../components/monitoring/MonitoringLogTable.astro";
 import WeatherTideForecast from "../components/monitoring/WeatherTideForecast.astro";
 import MonitoringHistoryViewer from "../components/monitoring/MonitoringHistoryViewer.astro";
-import MonitoringForm from "../components/monitoring/MonitoringForm.astro";
+import { getRelativeUrl } from "../utils/url";
 
 import {
   beachesData,
@@ -50,6 +51,24 @@ import {
     </div>
   </Section>
 
+  <!-- BANNER DESTACADO PARA REGISTRAR NUEVO INFORME -->
+  <Section>
+    <div class="report-cta-banner">
+      <div class="cta-text">
+        <span class="cta-badge">Guardia Comunitaria y Patrulleros</span>
+        <h2>¿Realizaste un patrullaje o avistamiento en playa?</h2>
+        <p>
+          Ingresa el nuevo informe de monitoreo. Ahora el registro está dividido en <strong>4 pasos cortos y sencillos</strong>, y solo la información básica de anidación es obligatoria.
+        </p>
+      </div>
+      <div class="cta-action">
+        <Button href={getRelativeUrl("/monitoreo/nuevo-reporte")} variant="primary">
+          📝 Llenar Nuevo Informe por Pasos
+        </Button>
+      </div>
+    </div>
+  </Section>
+
   <!-- Estado de las Playas en Tiempo Real -->
   <Section>
     <h2>Estado Actual de las Playas Monitoreadas</h2>
@@ -82,11 +101,6 @@ import {
   <!-- Módulo de Pronóstico Metereológico y Tabla de Mareas -->
   <Section>
     <WeatherTideForecast forecasts={beachForecastsData} />
-  </Section>
-
-  <!-- Formulario de Registro Oficial -->
-  <Section>
-    <MonitoringForm />
   </Section>
 </Layout>
 
@@ -166,6 +180,53 @@ import {
     font-weight: 600;
     color: #374151;
     margin-top: 0.25rem;
+  }
+
+  /* BANNER CTA A PÁGINA INDEPENDIENTE DE REPORTE */
+  .report-cta-banner {
+    background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 2.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(22, 101, 52, 0.25);
+    flex-wrap: wrap;
+  }
+
+  .cta-text {
+    max-width: 650px;
+  }
+
+  .cta-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .cta-text h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin: 0 0 0.5rem;
+  }
+
+  .cta-text p {
+    font-size: 1rem;
+    color: #dcfce7;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .cta-action {
+    flex-shrink: 0;
   }
 
   h2 {
