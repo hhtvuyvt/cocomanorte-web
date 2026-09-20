@@ -1,0 +1,969 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../components/ui/Section.astro";
+import Button from "../../components/ui/Button.astro";
+import { beachesData } from "../../data/beachMonitoring";
+import { getRelativeUrl } from "../../utils/url";
+
+const mainMonitoringUrl = getRelativeUrl("/monitoreo");
+---
+
+<Layout
+  title="Nuevo Reporte de Monitoreo | COCOMANORTE"
+  description="Formulario por pasos para el registro de patrullajes y avistamientos de tortugas marinas en el Chocó."
+>
+  <Section>
+    <div class="page-nav-top">
+      <Button href={getRelativeUrl("/monitoreo")} variant="outline">
+        ← Volver al Tablero de Monitoreo
+      </Button>
+    </div>
+
+    <div class="form-wizard-container">
+      <!-- VISTA DE AUTENTICACIÓN / ACCESO -->
+      <div id="auth-view" class="auth-box">
+        <div class="auth-header">
+          <span class="badge-protocol">Acceso Restringido - Patrulleros y Guardia</span>
+          <h2>Acceso para Patrulleros de COCOMANORTE</h2>
+          <p>
+            Ingresa con tu correo y contraseña para registrar el informe. Si aún no tienes cuenta, crea una en segundos.
+          </p>
+        </div>
+
+        <form id="auth-form" class="auth-form">
+          <div id="auth-error-msg" class="auth-error hidden"></div>
+          <div id="auth-success-msg" class="auth-success hidden"></div>
+
+          <div class="form-group">
+            <label for="auth-email">Correo Electrónico *</label>
+            <input type="email" id="auth-email" required placeholder="ejemplo@cocomanorte.org" />
+          </div>
+
+          <div class="form-group">
+            <label for="auth-password">Contraseña *</label>
+            <input type="password" id="auth-password" required minlength="6" placeholder="••••••••" />
+          </div>
+
+          <div class="auth-actions">
+            <button type="submit" id="btn-login" class="btn-auth-primary">
+              🔑 Iniciar Sesión
+            </button>
+            <button type="button" id="btn-signup" class="btn-auth-secondary">
+              📝 Registrar Nueva Cuenta
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- VISTA DEL FORMULARIO MULTI-PASO (SÓLO AUTENTICADO) -->
+      <div id="form-view" class="hidden" data-redirect-url={mainMonitoringUrl}>
+        <div class="form-wizard-header">
+          <div class="user-session-bar">
+            <span class="user-status">🟢 Patrullero Autenticado: <strong id="logged-user-email">cargando...</strong></span>
+            <button type="button" id="btn-logout" class="btn-logout">🚪 Cerrar Sesión</button>
+          </div>
+          <h2>Registrar Informe de Patrullaje</h2>
+          <p class="form-intro">
+            Hemos dividido el formulario en <strong>4 pasos sencillos</strong>. Solo el <strong>Paso 1 es obligatorio</strong>. Si no tienes datos de clima, oleaje o basura, puedes avanzar o enviarlo directamente.
+          </p>
+
+          <!-- BARRA DE PROGRESO POR PASOS -->
+          <div class="steps-progress">
+            <div class="step-pill active" data-step-indicator="1">
+              <span class="step-num">1</span>
+              <span class="step-text">Básicos y Anidación (Obligatorio)</span>
+            </div>
+            <div class="step-pill" data-step-indicator="2">
+              <span class="step-num">2</span>
+              <span class="step-text">Física y Clima (Opcional)</span>
+            </div>
+            <div class="step-pill" data-step-indicator="3">
+              <span class="step-num">3</span>
+              <span class="step-text">Residuos y Mar (Opcional)</span>
+            </div>
+            <div class="step-pill" data-step-indicator="4">
+              <span class="step-num">4</span>
+              <span class="step-text">Amenazas y Enviar (Opcional)</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="monitoring-form" class="monitoring-form">
+          <div id="form-error-banner" class="form-error-banner hidden"></div>
+
+          <!-- PASO 1: DATOS BÁSICOS Y ANIDACIÓN (OBLIGATORIO) -->
+          <div class="wizard-step" data-step="1">
+            <div class="step-header">
+              <h3>Paso 1: Datos Esenciales del Patrullaje y Registro de Anidación</h3>
+              <p class="step-guide">
+                Esta es la única sección indispensable. Registra dónde estuviste, quién realiza el reporte y cuántos nidos o neonatos observaste.
+              </p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend>0. Información de la Jornada y Evento</legend>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="beach">Playa de Monitoreo *</label>
+                  <select id="beach" name="beachName" required>
+                    <option value="">-- Selecciona la playa --</option>
+                    {beachesData.map((b) => (
+                      <option value={b.name}>{b.name} ({b.zone})</option>
+                    ))}
+                    <option value="NUEVA_PLAYA">➕ Registrar Nueva Playa Desconocida / No Listada</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="community">Comunidad / Consejo Local *</label>
+                  <input type="text" id="community" name="community" required placeholder="Ej: La Playona, Acandí Seco..." />
+                </div>
+              </div>
+
+              <!-- SECCIÓN DINÁMICA: NUEVA PLAYA -->
+              <div id="new-beach-fields" class="new-beach-box hidden">
+                <div class="box-title">📍 Registro de Nueva Playa y Coordenadas GPS</div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="customBeachName">Nombre de la Playa *</label>
+                    <input type="text" id="customBeachName" name="customBeachName" placeholder="Ej: Ensenada del Este..." />
+                  </div>
+                  <div class="form-group">
+                    <label for="latitude">Latitud GPS</label>
+                    <input type="number" step="0.000001" id="latitude" name="latitude" placeholder="Ej: 8.512345" />
+                  </div>
+                  <div class="form-group">
+                    <label for="longitude">Longitud GPS</label>
+                    <input type="number" step="0.000001" id="longitude" name="longitude" placeholder="Ej: -77.285432" />
+                  </div>
+                </div>
+                <button type="button" id="btn-get-location" class="btn-location">
+                  📍 Capturar GPS actual del navegador
+                </button>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="observer">Nombre del Monitor / Guardia *</label>
+                  <input type="text" id="observer" name="observerName" required placeholder="Nombre de los responsables" />
+                </div>
+
+                <div class="form-group">
+                  <label for="date">Fecha del Recorrido *</label>
+                  <input type="date" id="date" name="date" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="startTime">Hora de Inicio *</label>
+                  <input type="time" id="startTime" name="startTime" required />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+              <legend>Registro de Tortugas Marinas</legend>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="eventType">Tipo de Evento Principal *</label>
+                  <select id="eventType" name="eventType" required>
+                    <option value="Sin Avistamiento">Sin Avistamiento Especial</option>
+                    <option value="Anidación Exitosa">Anidación Exitosa / Nuevo Nido</option>
+                    <option value="Liberación de Neonatos">Liberación de Neonatos</option>
+                    <option value="Eclosión de Nido">Eclosión de Nido</option>
+                    <option value="Avistamiento de Huella">Avistamiento de Huella</option>
+                    <option value="Intento Fallido">Intento Fallido de Anidación</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="explicitActiveNestsCount">Nidos Nuevos Identificados *</label>
+                  <input type="number" min="0" id="explicitActiveNestsCount" name="explicitActiveNestsCount" value="0" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="explicitReleasedHatchlingsCount">Neonatos Liberados *</label>
+                  <input type="number" min="0" id="explicitReleasedHatchlingsCount" name="explicitReleasedHatchlingsCount" value="0" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="observedFauna">Detalle de Fauna Observada *</label>
+                <textarea id="observedFauna" name="observedFauna" rows="2" required placeholder="Escribe 'Sin novedades' o detalla marcas de estaca, especies de tortugas o huellas..."></textarea>
+              </div>
+            </fieldset>
+
+            <div class="wizard-buttons">
+              <span></span>
+              <button type="button" class="btn-step-next" data-next="2">
+                Siguiente: Clima y Física (Opcional) →
+              </button>
+            </div>
+          </div>
+
+          <!-- PASO 2: CARACTERIZACIÓN FÍSICA Y CLIMA (OPCIONAL) -->
+          <div class="wizard-step hidden" data-step="2">
+            <div class="step-header">
+              <h3>Paso 2: Caracterización Física, Clima y Oleaje (Opcional)</h3>
+              <p class="step-guide">
+                Información del estado del mar, marea y clima durante el recorrido. Si no tomaste estos datos, puedes presionar "Siguiente".
+              </p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend>1. Caracterización Física de la Orilla</legend>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="beachMaterialType">Material Predominante</label>
+                  <select id="beachMaterialType" name="beachMaterialType">
+                    <option value="Arena fina">Arena fina</option>
+                    <option value="Arena gruesa">Arena gruesa</option>
+                    <option value="Piedra">Piedra</option>
+                    <option value="Grava">Grava</option>
+                    <option value="Coral">Coral</option>
+                    <option value="Roca">Roca</option>
+                    <option value="Mezcla de materiales">Mezcla de materiales</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="slopeType">Pendiente de la Playa</label>
+                  <select id="slopeType" name="slopeType">
+                    <option value="">-- Opcional --</option>
+                    <option value="Muy plana">Muy plana</option>
+                    <option value="Plana">Plana</option>
+                    <option value="Moderada">Moderada</option>
+                    <option value="Pronunciada">Pronunciada</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="tideState">Estado de la Marea</label>
+                  <select id="tideState" name="tideState">
+                    <option value="Media">Media</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Baja">Baja</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+              <legend>2. Clima y Estado del Mar</legend>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="weatherCondition">Estado del Tiempo</label>
+                  <select id="weatherCondition" name="weatherCondition">
+                    <option value="">-- Opcional --</option>
+                    <option value="Soleado">Soleado</option>
+                    <option value="Nublado">Nublado</option>
+                    <option value="Lluvia ligera">Lluvia ligera</option>
+                    <option value="Lluvia fuerte">Lluvia fuerte</option>
+                    <option value="Tormenta">Tormenta</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="seaState">Estado del Mar</label>
+                  <select id="seaState" name="seaState">
+                    <option value="">-- Opcional --</option>
+                    <option value="Calmado">Calmado</option>
+                    <option value="Rizado">Rizado</option>
+                    <option value="Marejada">Marejada</option>
+                    <option value="Muy agitado">Muy agitado</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="wizard-buttons">
+              <button type="button" class="btn-step-prev" data-prev="1">← Volver al Paso 1</button>
+              <button type="button" class="btn-step-next" data-next="3">
+                Siguiente: Residuos y Entorno (Opcional) →
+              </button>
+            </div>
+          </div>
+
+          <!-- PASO 3: RESIDUOS E INFRAESTRUCTURA (OPCIONAL) -->
+          <div class="wizard-step hidden" data-step="3">
+            <div class="step-header">
+              <h3>Paso 3: Recursos Hídricos, Residuos e Infraestructura (Opcional)</h3>
+              <p class="step-guide">
+                Evolución de plásticos, redes o afectaciones en desembocaduras y construcciones cerca a la orilla.
+              </p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend>Contaminación y Residuos</legend>
+              <div class="form-group">
+                <label for="wasteQuantityLevel">Nivel General de Residuos</label>
+                <select id="wasteQuantityLevel" name="wasteQuantityLevel">
+                  <option value="Bajo">Bajo (Playa limpia / Pocos residuos)</option>
+                  <option value="Medio">Medio (Presencia de plásticos/redes)</option>
+                  <option value="Alto">Alto (Acumulación crítica)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Tipos de Residuos Encontrados</label>
+                <div class="checkbox-grid">
+                  <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Plásticos y botellas" /> Plásticos y botellas</label>
+                  <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Redes de pesca" /> Redes de pesca / Agallas</label>
+                  <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Vidrio y metal" /> Vidrio / Metal</label>
+                  <label class="checkbox-item"><input type="checkbox" name="wasteTypesFound" value="Madera tratada y caucho" /> Madera / Caucho</label>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="wizard-buttons">
+              <button type="button" class="btn-step-prev" data-prev="2">← Volver al Paso 2</button>
+              <button type="button" class="btn-step-next" data-next="4">
+                Siguiente: Amenazas y Finalizar →
+              </button>
+            </div>
+          </div>
+
+          <!-- PASO 4: AMENAZAS Y CONFIRMACIÓN -->
+          <div class="wizard-step hidden" data-step="4">
+            <div class="step-header">
+              <h3>Paso 4: Amenazas, Conocimiento Ancestral y Envío</h3>
+              <p class="step-guide">
+                Última sección opcional. Señala si observaste erosión, tala o turismo no regulado y envía el reporte.
+              </p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend>Amenazas Identificadas</legend>
+              <div class="form-group">
+                <div class="checkbox-grid">
+                  <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Erosión costera severa" /> Erosión costera severa</label>
+                  <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Tala de manglar / vegetación" /> Tala de manglar / vegetación</label>
+                  <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Turismo no controlado" /> Turismo no controlado / Luminarias</label>
+                  <label class="checkbox-item"><input type="checkbox" name="identifiedThreats" value="Extracción ilegal de arena" /> Extracción de arena</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="observationsNotes">Notas Adicionales / Recomendaciones</label>
+                <textarea id="observationsNotes" name="observationsNotes" rows="3" placeholder="Comentarios finales para la Guardia o la Junta Directiva de COCOMANORTE..."></textarea>
+              </div>
+            </fieldset>
+
+            <div class="wizard-buttons">
+              <button type="button" class="btn-step-prev" data-prev="3">← Volver al Paso 3</button>
+              <button type="submit" id="submit-btn" class="submit-btn">
+                📋 Finalizar y Enviar Reporte de Monitoreo
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<script>
+  import { supabase, isSupabaseConfigured } from "../../lib/supabase";
+  import { saveMonitoringReport } from "../../utils/monitoringStorage";
+
+  const authView = document.getElementById("auth-view");
+  const formView = document.getElementById("form-view");
+  const loggedUserEmail = document.getElementById("logged-user-email");
+  const authForm = document.getElementById("auth-form") as HTMLFormElement | null;
+  const emailInput = document.getElementById("auth-email") as HTMLInputElement | null;
+  const passwordInput = document.getElementById("auth-password") as HTMLInputElement | null;
+  const authErrorMsg = document.getElementById("auth-error-msg");
+  const authSuccessMsg = document.getElementById("auth-success-msg");
+  const btnSignup = document.getElementById("btn-signup");
+  const btnLogout = document.getElementById("btn-logout");
+
+  const wizardSteps = document.querySelectorAll<HTMLElement>(".wizard-step");
+  const stepPills = document.querySelectorAll<HTMLElement>(".step-pill");
+  const btnNextList = document.querySelectorAll<HTMLButtonElement>(".btn-step-next");
+  const btnPrevList = document.querySelectorAll<HTMLButtonElement>(".btn-step-prev");
+
+  const beachSelect = document.getElementById("beach") as HTMLSelectElement | null;
+  const newBeachFields = document.getElementById("new-beach-fields");
+  const customBeachName = document.getElementById("customBeachName") as HTMLInputElement | null;
+  const latInput = document.getElementById("latitude") as HTMLInputElement | null;
+  const lngInput = document.getElementById("longitude") as HTMLInputElement | null;
+  const btnLocation = document.getElementById("btn-get-location");
+  const form = document.getElementById("monitoring-form") as HTMLFormElement | null;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement | null;
+  const formErrorBanner = document.getElementById("form-error-banner");
+
+  function showStep(stepNum: number) {
+    wizardSteps.forEach((step) => {
+      if (step.dataset.step === String(stepNum)) {
+        step.classList.remove("hidden");
+      } else {
+        step.classList.add("hidden");
+      }
+    });
+
+    stepPills.forEach((pill) => {
+      if (pill.dataset.stepIndicator === String(stepNum)) {
+        pill.classList.add("active");
+      } else {
+        pill.classList.remove("active");
+      }
+    });
+
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }
+
+  btnNextList.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const nextStep = parseInt(btn.dataset.next || "1", 10);
+      showStep(nextStep);
+    });
+  });
+
+  btnPrevList.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const prevStep = parseInt(btn.dataset.prev || "1", 10);
+      showStep(prevStep);
+    });
+  });
+
+  function updateAuthUI(userEmail: string | null) {
+    if (userEmail) {
+      if (authView) authView.classList.add("hidden");
+      if (formView) formView.classList.remove("hidden");
+      if (loggedUserEmail) loggedUserEmail.textContent = userEmail;
+    } else {
+      if (authView) authView.classList.remove("hidden");
+      if (formView) formView.classList.add("hidden");
+      if (loggedUserEmail) loggedUserEmail.textContent = "";
+    }
+  }
+
+  if (isSupabaseConfigured && supabase) {
+    supabase.auth.getSession().then(({ data }) => {
+      updateAuthUI(data.session?.user?.email || null);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      updateAuthUI(session?.user?.email || null);
+    });
+  } else {
+    updateAuthUI("patrullero_offline@cocomanorte.org");
+  }
+
+  if (authForm && emailInput && passwordInput) {
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (authErrorMsg) authErrorMsg.classList.add("hidden");
+      if (authSuccessMsg) authSuccessMsg.classList.add("hidden");
+
+      if (!isSupabaseConfigured || !supabase) {
+        alert("Supabase no está configurado.");
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailInput.value,
+        password: passwordInput.value,
+      });
+
+      if (error) {
+        if (authErrorMsg) {
+          authErrorMsg.textContent = `❌ Error de ingreso: ${error.message}`;
+          authErrorMsg.classList.remove("hidden");
+        }
+      } else if (data.session) {
+        updateAuthUI(data.session.user.email || null);
+      }
+    });
+  }
+
+  if (btnSignup && emailInput && passwordInput) {
+    btnSignup.addEventListener("click", async () => {
+      if (authErrorMsg) authErrorMsg.classList.add("hidden");
+      if (authSuccessMsg) authSuccessMsg.classList.add("hidden");
+
+      if (!emailInput.value || !passwordInput.value) {
+        alert("Ingresa correo y contraseña para registrarte.");
+        return;
+      }
+
+      if (!isSupabaseConfigured || !supabase) {
+        alert("Supabase no está configurado.");
+        return;
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email: emailInput.value,
+        password: passwordInput.value,
+      });
+
+      if (error) {
+        if (authErrorMsg) {
+          authErrorMsg.textContent = `❌ Error de registro: ${error.message}`;
+          authErrorMsg.classList.remove("hidden");
+        }
+      } else {
+        if (authSuccessMsg) {
+          authSuccessMsg.textContent = "✅ Registro exitoso. Revisa tu correo o inicia sesión.";
+          authSuccessMsg.classList.remove("hidden");
+        }
+      }
+    });
+  }
+
+  if (btnLogout) {
+    btnLogout.addEventListener("click", async () => {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+      updateAuthUI(null);
+    });
+  }
+
+  if (beachSelect && newBeachFields && customBeachName && latInput && lngInput) {
+    beachSelect.addEventListener("change", () => {
+      if (beachSelect.value === "NUEVA_PLAYA") {
+        newBeachFields.classList.remove("hidden");
+        customBeachName.setAttribute("required", "true");
+      } else {
+        newBeachFields.classList.add("hidden");
+        customBeachName.removeAttribute("required");
+      }
+    });
+  }
+
+  if (btnLocation && latInput && lngInput) {
+    btnLocation.addEventListener("click", () => {
+      if ("geolocation" in navigator) {
+        btnLocation.textContent = "⏳ Obteniendo GPS...";
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            latInput.value = pos.coords.latitude.toFixed(6);
+            lngInput.value = pos.coords.longitude.toFixed(6);
+            btnLocation.textContent = "✅ GPS obtenido";
+          },
+          (err) => {
+            alert("No se pudo obtener GPS: " + err.message);
+            btnLocation.textContent = "📍 Capturar GPS actual del navegador";
+          }
+        );
+      }
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (formErrorBanner) formErrorBanner.classList.add("hidden");
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ Enviando reporte...";
+      }
+
+      const formData = new FormData(form);
+      const isNewBeach = formData.get("beachName") === "NUEVA_PLAYA";
+
+      const reportData = {
+        beachName: isNewBeach ? (formData.get("customBeachName") as string) : (formData.get("beachName") as string),
+        isNewUnregisteredBeach: isNewBeach,
+        customBeachName: formData.get("customBeachName") as string,
+        latitude: formData.get("latitude") ? parseFloat(formData.get("latitude") as string) : undefined,
+        longitude: formData.get("longitude") ? parseFloat(formData.get("longitude") as string) : undefined,
+        community: formData.get("community") as string,
+        observerName: formData.get("observerName") as string,
+        date: formData.get("date") as string,
+        startTime: formData.get("startTime") as string,
+        endTime: formData.get("endTime") as string,
+        beachMaterialType: (formData.get("beachMaterialType") as any) || "Arena fina",
+        slopeType: formData.get("slopeType") as any,
+        tideState: (formData.get("tideState") as any) || "Media",
+        weatherCondition: formData.get("weatherCondition") as any,
+        seaState: formData.get("seaState") as any,
+        observedFauna: formData.get("observedFauna") as string,
+        eventType: (formData.get("eventType") as any) || "Sin Avistamiento",
+        explicitActiveNestsCount: formData.get("explicitActiveNestsCount") ? parseInt(formData.get("explicitActiveNestsCount") as string, 10) : 0,
+        explicitReleasedHatchlingsCount: formData.get("explicitReleasedHatchlingsCount") ? parseInt(formData.get("explicitReleasedHatchlingsCount") as string, 10) : 0,
+        wasteQuantityLevel: (formData.get("wasteQuantityLevel") as any) || "Bajo",
+        wasteTypesFound: formData.getAll("wasteTypesFound") as string[],
+        identifiedThreats: formData.getAll("identifiedThreats") as string[],
+        observationsNotes: formData.get("observationsNotes") as string,
+      };
+
+      try {
+        const result = await saveMonitoringReport(reportData);
+
+        if (!result.insertSuccess) {
+          if (formErrorBanner) {
+            formErrorBanner.textContent = `❌ Error al enviar reporte: ${result.errorDetails || "No se pudo guardar la planilla."}`;
+            formErrorBanner.classList.remove("hidden");
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "📋 Finalizar y Enviar Reporte de Monitoreo";
+          }
+          return;
+        }
+
+        alert(`✅ ¡Reporte enviado exitosamente!\n\nPlaya: ${result.beach.name}\nSe ha guardado en la base de datos de COCOMANORTE.`);
+
+        const redirectTarget = formView?.dataset.redirectUrl || "../monitoreo";
+        window.location.href = redirectTarget;
+      } catch (err: any) {
+        if (formErrorBanner) {
+          formErrorBanner.textContent = `❌ Error crítico: ${err?.message || err}`;
+          formErrorBanner.classList.remove("hidden");
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "📋 Finalizar y Enviar Reporte de Monitoreo";
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .page-nav-top {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-wizard-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2.25rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .auth-box {
+    max-width: 480px;
+    margin: 1rem auto;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .auth-header h2 {
+    font-size: 1.5rem;
+    color: var(--verde-territorio, #166534);
+    margin: 0.5rem 0;
+  }
+
+  .auth-header p {
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .auth-error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .auth-success {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .auth-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn-auth-primary {
+    background: var(--verde-territorio, #166534);
+    color: white;
+    font-weight: 700;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  .btn-auth-secondary {
+    background: #ffffff;
+    border: 1px solid var(--verde-territorio, #166534);
+    color: var(--verde-territorio, #166534);
+    font-weight: 600;
+    padding: 0.7rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .user-session-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .user-status {
+    font-size: 0.9rem;
+    color: #166534;
+  }
+
+  .btn-logout {
+    background: #ffffff;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .form-wizard-header h2 {
+    font-size: 1.8rem;
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 0.5rem;
+  }
+
+  .form-intro {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0 0 1.5rem;
+  }
+
+  /* BARRA DE PROGRESO PASO A PASO */
+  .steps-progress {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .step-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+  }
+
+  .step-pill.active {
+    background: #f0fdf4;
+    border-color: var(--verde-territorio, #166534);
+    opacity: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .step-num {
+    background: var(--verde-territorio, #166534);
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .step-header h3 {
+    font-size: 1.3rem;
+    color: var(--verde-territorio, #166534);
+    margin: 0 0 0.4rem;
+  }
+
+  .step-guide {
+    font-size: 0.95rem;
+    color: #4b5563;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .monitoring-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-section legend {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--verde-territorio, #166534);
+    background: #ffffff;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    background: #ffffff;
+  }
+
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.6rem;
+    background: #ffffff;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+  }
+
+  .wizard-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 1rem;
+  }
+
+  .btn-step-next,
+  .submit-btn {
+    background: var(--verde-territorio, #166534);
+    color: white;
+    font-weight: 700;
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .btn-step-prev {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    font-weight: 600;
+    padding: 0.9rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .form-error-banner {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .badge-protocol {
+    display: inline-block;
+    background: var(--verde-claro, #dcfce7);
+    color: var(--verde-territorio, #166534);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .new-beach-box {
+    background: #f0fdf4;
+    border: 2px dashed var(--verde-territorio, #166534);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .box-title {
+    font-weight: 700;
+    color: var(--verde-territorio, #166534);
+  }
+
+  .btn-location {
+    align-self: flex-start;
+    background: #ffffff;
+    border: 1px solid var(--verde-territorio, #166534);
+    color: var(--verde-territorio, #166534);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
