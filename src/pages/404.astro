@@ -1,0 +1,86 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/ui/Section.astro";
+import Button from "../components/ui/Button.astro";
+import { getRelativeUrl } from "../utils/url";
+---
+
+<Layout
+  title="Página No Encontrada (404) | COCOMANORTE"
+  description="La página o recurso al que intentas acceder no existe en el sitio web de COCOMANORTE."
+>
+  <Section>
+    <div class="not-found-container">
+      <div class="not-found-card">
+        <span class="error-code">404</span>
+        <h1>Página No Encontrada</h1>
+        <p class="error-desc">
+          La ruta a la que intentaste ingresar no existe o ha sido movida dentro del sitio web oficial de COCOMANORTE.
+        </p>
+
+        <div class="redirect-actions">
+          <Button href={getRelativeUrl("/")} variant="primary">
+            🏠 Ir al Inicio
+          </Button>
+          <Button href={getRelativeUrl("/monitoreo")} variant="outline">
+            📊 Ver Monitoreo de Playas
+          </Button>
+          <Button href={getRelativeUrl("/territorio")} variant="outline">
+            🌿 Conocer el Territorio
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<style>
+  .not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+  }
+
+  .not-found-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  .error-code {
+    display: inline-block;
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--verde-territorio, #166534);
+    background: #dcfce7;
+    padding: 0.2rem 1.5rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #1f2937;
+    margin: 0 0 0.75rem;
+  }
+
+  .error-desc {
+    font-size: 1.05rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .redirect-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.85rem;
+  }
+</style>
