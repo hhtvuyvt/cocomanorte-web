@@ -11,10 +11,17 @@ const { forecasts } = Astro.props;
 <div class="forecast-container">
   <div class="forecast-header">
     <div class="header-text">
-      <span class="badge-meteorology">🌤️ Previsión Metereológica & Mareas</span>
-      <h2>Pronóstico de Seguridad y Viabilidad para Patrullaje</h2>
+      <span class="badge-meteorology">🌤️ Datos de Referencia (Ejemplo Demostrativo)</span>
+      <h2>Condiciones de Referencia y Mareas (Datos de Muestra)</h2>
       <p class="intro">
-        Consulta el estado del tiempo, la tabla de mareas y la viabilidad de acceso a las playas antes de iniciar la jornada de monitoreo.
+        Valores ilustrativos de referencia sobre clima y comportamiento de mareas basados en datos de muestra.
+      </p>
+    </div>
+
+    <div class="official-source-notice">
+      <strong>⚠️ Nota informativa importante:</strong>
+      <p>
+        Los datos mostrados en esta sección son un <strong>ejemplo demostrativo con datos de muestra local</strong> y NO corresponden a una fuente meteorológica en tiempo real ni oficial. Para la toma de decisiones operativas y la planificación de salidas de patrullaje marítimo o terrestre de la guardia comunitaria, consulte siempre las fuentes oficiales autorizadas (<a href="http://www.ideam.gov.co/" target="_blank" rel="noopener noreferrer">IDEAM</a> o la <a href="https://www.dimar.mil.co/" target="_blank" rel="noopener noreferrer">Capitanía de Puerto - DIMAR</a>).
       </p>
     </div>
   </div>
@@ -30,7 +37,7 @@ const { forecasts } = Astro.props;
             </div>
 
             <div class={`status-badge ${f.feasibilityStatus.includes("Favorables") ? "favorable" : "warning"}`}>
-              {f.feasibilityStatus.includes("Favorables") ? "🟢" : "🟡"} {f.feasibilityStatus}
+              {f.feasibilityStatus.includes("Favorables") ? "🟢" : "🟡"} {f.feasibilityStatus} (Ejemplo)
             </div>
           </div>
 
@@ -86,7 +93,7 @@ const { forecasts } = Astro.props;
 
           <!-- Recomendación para el Monitor -->
           <div class="recommendation-box">
-            <strong>💡 Recomendación Guardia / Monitor:</strong>
+            <strong>💡 Ejemplo Ilustrativo de Recomendación Operativa:</strong>
             <p>{f.recommendationForPatrollers}</p>
           </div>
         </div>
@@ -128,7 +135,35 @@ const { forecasts } = Astro.props;
     font-size: 1rem;
     color: #4b5563;
     line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .official-source-notice {
+    background: #fefce8;
+    border: 1px solid #fef08a;
+    border-left: 4px solid var(--tierra-ancestral, #92400e);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
     margin-bottom: 1.75rem;
+    color: #713f12;
+    font-size: 0.9rem;
+  }
+
+  .official-source-notice strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .official-source-notice p {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .official-source-notice a {
+    color: var(--azul-caribe, #0369a1);
+    font-weight: 700;
+    text-decoration: underline;
   }
 
   .forecast-grid {

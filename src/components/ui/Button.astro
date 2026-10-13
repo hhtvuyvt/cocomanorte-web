@@ -32,7 +32,7 @@ import { getRelativeUrl } from "../../utils/url";
 
 interface Props {
   href: string;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "outline";
 }
 
 const { href, variant = "primary" } = Astro.props;
@@ -45,31 +45,53 @@ const formattedHref = getRelativeUrl(href);
 
 <style>
   .button {
-    display: inline-block;
-    padding: 12px 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
-    transition: 0.25s;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .button:focus-visible {
+    outline: 2px solid var(--verde-territorio, #166534);
+    outline-offset: 2px;
   }
 
   .primary {
-    background: var(--verde-territorio);
+    background: var(--verde-territorio, #166534);
     color: white;
+    border: 1px solid var(--verde-territorio, #166534);
   }
 
   .primary:hover {
     background: #14532d;
+    border-color: #14532d;
   }
 
   .secondary {
     background: transparent;
-    color: var(--verde-territorio);
-    border: 2px solid var(--verde-territorio);
+    color: var(--verde-territorio, #166534);
+    border: 2px solid var(--verde-territorio, #166534);
   }
 
   .secondary:hover {
-    background: var(--verde-territorio);
+    background: var(--verde-territorio, #166534);
     color: white;
+  }
+
+  .outline {
+    background: #ffffff;
+    color: var(--verde-territorio, #166534);
+    border: 1px solid #d1d5db;
+  }
+
+  .outline:hover {
+    background: var(--verde-claro, #dcfce7);
+    border-color: var(--verde-territorio, #166534);
+    color: var(--verde-territorio, #166534);
   }
 </style>

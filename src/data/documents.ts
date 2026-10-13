@@ -16,8 +16,6 @@ export const officialDocuments: OfficialDocument[] = [
     description:
       "Documento normativo de convivencia, uso del territorio colectivo, convivencia comunitaria y principios de gobierno propio.",
     date: "2023",
-    fileUrl: "#",
-    fileSize: "PDF (1.8 MB)",
   },
   {
     id: "doc-02",
@@ -26,8 +24,6 @@ export const officialDocuments: OfficialDocument[] = [
     description:
       "Estrategia de conservación comunitaria, delimitación de zonas de protección de flora y fauna, y protocolo de monitoreo.",
     date: "2024",
-    fileUrl: "#",
-    fileSize: "PDF (2.4 MB)",
   },
   {
     id: "doc-03",
@@ -36,8 +32,6 @@ export const officialDocuments: OfficialDocument[] = [
     description:
       "Informe anual de gestión, ejecución de proyectos comunitarios e inversión social realizada en el territorio.",
     date: "2024",
-    fileUrl: "#",
-    fileSize: "PDF (3.1 MB)",
   },
   {
     id: "doc-04",
@@ -46,7 +40,5 @@ export const officialDocuments: OfficialDocument[] = [
     description:
       "Estructura orgánica, deberes y derechos de los miembros de las comunidades integradas al Consejo Comunitario Mayor.",
     date: "2022",
-    fileUrl: "#",
-    fileSize: "PDF (1.2 MB)",
   },
 ];

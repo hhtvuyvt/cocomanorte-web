@@ -24,10 +24,16 @@ const { document } = Astro.props;
     <p class="description">{document.description}</p>
 
     <div class="actions">
-      <a href={document.fileUrl || "#"} class="download-button" aria-label={`Descargar ${document.title}`}>
-        <span>Descargar Documento</span>
-        {document.fileSize && <span class="file-size">({document.fileSize})</span>}
-      </a>
+      {
+        document.fileUrl && document.fileUrl !== "#" ? (
+          <a href={document.fileUrl} class="download-button" aria-label={`Descargar ${document.title}`}>
+            <span>Descargar Documento</span>
+            {document.fileSize && <span class="file-size">({document.fileSize})</span>}
+          </a>
+        ) : (
+          <span class="doc-status-badge">📄 Documento disponible próximamente</span>
+        )
+      }
     </div>
   </div>
 </div>
@@ -136,5 +142,18 @@ const { document } = Astro.props;
     font-weight: 400;
     font-size: 0.8rem;
     color: #4b5563;
+  }
+
+  .doc-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--gris-texto, #374151);
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
   }
 </style>
